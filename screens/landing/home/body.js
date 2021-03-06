@@ -35,6 +35,7 @@ export default function body() {
     }
   }, [selectedCategory]);
 
+  // NEWS & UPDATE
   function renderCarouselNews() {
     return (
       <View>
@@ -125,42 +126,17 @@ export default function body() {
     );
   }
 
-  function renderPopularList() {
-    const renderItem = ({item}) => {
-      return (
-        <TouchableOpacity
-          style={{
-            height: 170,
-            width: 120,
-            marginRight: 10,
-            borderRadius: 10,
-            backgroundColor: COLORS.secondary,
-          }}>
-          <Text
-            style={{
-              position: 'absolute',
-              bottom: 10,
-              left: 10,
-              ...FONTS.body2,
-              color: COLORS.white,
-            }}>
-            {item.title}
-          </Text>
-        </TouchableOpacity>
-      );
-    };
+  function renderNews() {
     return (
-      <FlatList
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        data={popularList}
-        renderItem={renderItem}
-        keyExtractor={(item) => `${item.id}`}
-      />
+      <View>
+        {renderCarouselNews()}
+        {renderDots()}
+      </View>
     );
   }
 
-  function renderPopular() {
+  // POPULAR DESTINATION
+  function renderPopularCategory() {
     const renderItem = ({item}) => {
       return (
         <TouchableOpacity
@@ -197,17 +173,40 @@ export default function body() {
     );
   }
 
-  function renderNews() {
+  function renderPopularList() {
+    const renderItem = ({item}) => {
+      return (
+        <TouchableOpacity style={styles.popularList}>
+          <Text
+            style={{
+              position: 'absolute',
+              bottom: 10,
+              left: 10,
+              ...FONTS.body2,
+              color: COLORS.white,
+            }}>
+            {item.title}
+          </Text>
+        </TouchableOpacity>
+      );
+    };
     return (
-      <View>
-        {renderCarouselNews()}
-        {renderDots()}
-        {renderPopular()}
-      </View>
+      <FlatList
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        data={popularList}
+        renderItem={renderItem}
+        keyExtractor={(item) => `${item.id}`}
+      />
     );
   }
 
-  return <View style={styles.container}>{renderNews()}</View>;
+  return (
+    <View style={styles.container}>
+      {renderNews()}
+      {renderPopularCategory()}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -244,5 +243,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: COLORS.primary,
+  },
+  popularList: {
+    height: 170,
+    width: 120,
+    marginRight: 10,
+    borderRadius: 10,
+    backgroundColor: COLORS.secondary,
   },
 });
