@@ -5,6 +5,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import home from './screens/landing/tabs';
+import attraction from './screens/attraction';
 
 const Stack = createStackNavigator();
 
@@ -17,7 +18,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="home" headerMode={{headerShow: false}}>
         <Stack.Screen component={home} name="home" />
-        <Stack.Screen component={emptyScreen} name="template" />
+        <Stack.Screen component={attraction} name="attraction" />
       </Stack.Navigator>
     </NavigationContainer>
   );

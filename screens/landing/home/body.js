@@ -19,21 +19,11 @@ import {
   POPULAR,
 } from '../../../constants';
 
-export default function body() {
+export default function body({navigation}) {
   const scrollX = new Animated.Value(0);
   const [category, setCategory] = useState([{title: 'all'}, ...CATEGORIES]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [popularList, setPopularList] = useState(POPULAR);
-
-  useEffect(() => {
-    if (selectedCategory !== 'all') {
-      setPopularList(
-        POPULAR.filter((a) => a.category.includes(selectedCategory)),
-      );
-    } else {
-      setPopularList(POPULAR);
-    }
-  }, [selectedCategory]);
 
   // NEWS & UPDATE
   function renderCarouselNews() {
@@ -137,6 +127,17 @@ export default function body() {
 
   // POPULAR DESTINATION
   function renderPopularCategory() {
+    const onClickCategory = (item) => {
+      const newPopularList = POPULAR.filter((a) =>
+        a.category.includes(item.title),
+      );
+
+      if (item.title == 'all') setPopularList(POPULAR);
+      else setPopularList(newPopularList);
+
+      setSelectedCategory(item.title);
+    };
+
     const renderItem = ({item}) => {
       return (
         <TouchableOpacity
@@ -145,7 +146,7 @@ export default function body() {
             backgroundColor:
               item.title == selectedCategory ? COLORS.primary : COLORS.white,
           }}
-          onPress={() => setSelectedCategory(item.title)}>
+          onPress={() => onClickCategory(item)}>
           <Text
             style={{
               ...FONTS.body1,
@@ -176,17 +177,19 @@ export default function body() {
   function renderPopularList() {
     const renderItem = ({item}) => {
       return (
-        <TouchableOpacity style={styles.popularList}>
-          <Text
-            style={{
-              position: 'absolute',
-              bottom: 10,
-              left: 10,
-              ...FONTS.body2,
-              color: COLORS.white,
-            }}>
-            {item.title}
-          </Text>
+        <TouchableOpacity
+          style={{marginRight: 10}}
+          onPress={() =>
+            navigation.navigate('attraction', {
+              item: item,
+            })
+          }>
+          <Image
+            source={item.image}
+            resizeMode="cover"
+            style={styles.popularList}
+          />
+          <Text style={styles.popularListLabel}>{item.title}</Text>
         </TouchableOpacity>
       );
     };
@@ -247,8 +250,14 @@ const styles = StyleSheet.create({
   popularList: {
     height: 170,
     width: 120,
-    marginRight: 10,
     borderRadius: 10,
     backgroundColor: COLORS.secondary,
+  },
+  popularListLabel: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    ...FONTS.body2,
+    color: COLORS.white,
   },
 });

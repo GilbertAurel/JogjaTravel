@@ -13,7 +13,7 @@ export default function home({navigation}) {
       <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {header()}
-        {body()}
+        {body({navigation})}
       </ScrollView>
     </>
   );
