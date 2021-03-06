@@ -155,9 +155,7 @@ export default function body() {
         showsHorizontalScrollIndicator={false}
         data={popularList}
         renderItem={renderItem}
-        keyExtractor={(item, index) => {
-          `${item.id}-${index}`;
-        }}
+        keyExtractor={(item) => `${item.id}`}
       />
     );
   }
