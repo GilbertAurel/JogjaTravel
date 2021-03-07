@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import home from './home';
+import discovery from './discovery';
 import {SIZES, COLORS} from '../../constants';
 
 const Tabs = createBottomTabNavigator();
@@ -35,8 +36,8 @@ export default function tabs() {
         }}
       />
       <Tabs.Screen
-        component={emptyScreen}
-        name="temp"
+        component={discovery}
+        name="discovery"
         options={{
           tabBarIcon: ({focused}) => (
             <MaterialIcons

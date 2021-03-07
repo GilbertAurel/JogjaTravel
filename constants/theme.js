@@ -26,9 +26,10 @@ export const COLORS = {
   lightblue: '#D3E0EA',
   lightgray: '#FAFAFA',
 
-  gray: '#F6F5F5',
+  gray: '#636363',
   white: '#fff',
   black: '#000',
+  yellow: '#FFD700',
 };
 
 export const FONTS = {

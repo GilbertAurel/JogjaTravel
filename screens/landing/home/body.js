@@ -42,7 +42,10 @@ export default function body({navigation}) {
             {useNativeDriver: false},
           )}>
           {NEWS.map((item, index) => (
-            <TouchableOpacity key={index} style={styles.newsCarousel}>
+            <TouchableOpacity
+              key={index}
+              style={styles.newsCarousel}
+              activeOpacity={1}>
               <View style={styles.newsLocationLabel}>
                 <MaterialIcons
                   name="location-on"
@@ -183,7 +186,8 @@ export default function body({navigation}) {
             navigation.navigate('attraction', {
               item: item,
             })
-          }>
+          }
+          activeOpacity={1}>
           <Image
             source={item.image}
             resizeMode="cover"

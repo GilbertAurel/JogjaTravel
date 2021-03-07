@@ -1,5 +1,11 @@
 import IMAGE from '../images';
 
+const priceRating = {
+  affordable: 1,
+  fair: 2,
+  expensive: 3,
+};
+
 export const popular = [
   {
     id: 1,
@@ -8,6 +14,8 @@ export const popular = [
     description:
       'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor, nobis.',
     image: IMAGE.alun,
+    rating: 3.5,
+    priceRating: priceRating.affordable,
   },
   {
     id: 2,
@@ -16,6 +24,8 @@ export const popular = [
     description:
       'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor, nobis.',
     image: IMAGE.malioboro,
+    rating: 4.0,
+    priceRating: priceRating.affordable,
   },
   {
     id: 3,
@@ -24,6 +34,8 @@ export const popular = [
     description:
       'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor, nobis.',
     image: IMAGE.indrayanti,
+    rating: 4.8,
+    priceRating: priceRating.affordable,
   },
   {
     id: 4,
@@ -32,6 +44,8 @@ export const popular = [
     description:
       'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor, nobis.',
     image: IMAGE.tempoGelato,
+    rating: 4.5,
+    priceRating: priceRating.expensive,
   },
   {
     id: 5,
@@ -40,6 +54,8 @@ export const popular = [
     description:
       'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor, nobis.',
     image: IMAGE.jnm,
+    rating: 3.8,
+    priceRating: priceRating.fair,
   },
   {
     id: 6,
@@ -48,6 +64,8 @@ export const popular = [
     description:
       'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor, nobis.',
     image: IMAGE.bakpiaTugu,
+    rating: 4.8,
+    priceRating: priceRating.fair,
   },
   {
     id: 7,
@@ -56,6 +74,8 @@ export const popular = [
     description:
       'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Dolor, nobis.',
     image: IMAGE.merapiTour,
+    rating: 4.5,
+    priceRating: priceRating.expensive,
   },
 ];
 
