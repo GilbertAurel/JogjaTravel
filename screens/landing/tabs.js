@@ -6,6 +6,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import home from './home';
 import discovery from './discovery';
+import bookmark from './bookmark';
 import {SIZES, COLORS} from '../../constants';
 
 const Tabs = createBottomTabNavigator();
@@ -49,12 +50,12 @@ export default function tabs() {
         }}
       />
       <Tabs.Screen
-        component={emptyScreen}
-        name="temp2"
+        component={bookmark}
+        name="bookmark"
         options={{
           tabBarIcon: ({focused}) => (
             <MaterialIcons
-              name="map"
+              name="bookmark"
               size={SIZES.icon}
               color={focused ? COLORS.primary : COLORS.lightblue}
             />

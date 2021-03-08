@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,7 @@ import {
 
 export default function body({navigation}) {
   const scrollX = new Animated.Value(0);
+  const flatListRef = useRef();
   const [category, setCategory] = useState([{title: 'all'}, ...CATEGORIES]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [popularList, setPopularList] = useState(POPULAR);
@@ -88,9 +89,15 @@ export default function body({navigation}) {
               extrapolate: 'clamp',
             });
 
-            const dotSize = dotPosition.interpolate({
+            const dotSizeHeight = dotPosition.interpolate({
               inputRange: [index - 1, index, index + 1],
-              outputRange: [5, 8, 5],
+              outputRange: [5, 6, 5],
+              extrapolate: 'clamp',
+            });
+
+            const dotSizeWidth = dotPosition.interpolate({
+              inputRange: [index - 1, index, index + 1],
+              outputRange: [5, 15, 5],
               extrapolate: 'clamp',
             });
 
@@ -107,8 +114,8 @@ export default function body({navigation}) {
                 style={{
                   borderRadius: SIZES.radius,
                   marginHorizontal: 6,
-                  width: dotSize,
-                  height: dotSize,
+                  width: dotSizeWidth,
+                  height: dotSizeHeight,
                   backgroundColor: dotColor,
                 }}
               />
@@ -138,6 +145,7 @@ export default function body({navigation}) {
       if (item.title == 'all') setPopularList(POPULAR);
       else setPopularList(newPopularList);
 
+      flatListRef.current.scrollToIndex({index: 0, animated: false});
       setSelectedCategory(item.title);
     };
 
@@ -200,6 +208,7 @@ export default function body({navigation}) {
     return (
       <FlatList
         horizontal
+        ref={flatListRef}
         showsHorizontalScrollIndicator={false}
         data={popularList}
         renderItem={renderItem}

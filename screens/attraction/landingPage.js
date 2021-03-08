@@ -4,7 +4,7 @@ import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {COLORS, FONTS, SIZES} from '../../constants';
 
-export default function landing(item) {
+export default function landing({item, scrollRef}) {
   return (
     <View style={styles.container}>
       {/* Background image */}
@@ -66,7 +66,9 @@ export default function landing(item) {
 
       {/* more button */}
       <View style={styles.moreButton}>
-        <TouchableOpacity style={{alignItems: 'center'}} onPress={() => {}}>
+        <TouchableOpacity
+          style={{alignItems: 'center'}}
+          onPress={() => scrollRef.current.scrollToEnd()}>
           <Text style={{...FONTS.body3, color: COLORS.white}}>read more</Text>
           <MaterialIcons
             name="keyboard-arrow-down"

@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {COLORS, FONTS, SIZES, MENU} from '../../../constants';
 
-export default function header() {
+export default function header({navigation}) {
   function renderTitle() {
     return (
       <View
@@ -100,7 +100,8 @@ export default function header() {
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
-              key={`${item.name}`}>
+              key={`${item.name}`}
+              onPress={() => navigation.navigate(`${item.tag}`)}>
               <MaterialIcons
                 name={item.icon}
                 size={SIZES.icon}
