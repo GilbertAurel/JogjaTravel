@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {StatusBar, ScrollView} from 'react-native';
+import {StatusBar, ScrollView, TouchableOpacity, Text} from 'react-native';
 
 import LandingPage from './landingPage';
 import DetailPage from './detailPage';
@@ -22,7 +22,7 @@ export default function index({route}) {
         showsVerticalScrollIndicator={false}
         ref={scrollRef}>
         <LandingPage item={item} scrollRef={scrollRef} />
-        <DetailPage />
+        <DetailPage item={item} />
       </ScrollView>
     </>
   );

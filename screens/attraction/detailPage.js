@@ -3,11 +3,14 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import {saveAttraction} from '../../redux/actions';
 import {COLORS, FONTS, SIZES} from '../../constants';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
 
-export default function detailPage() {
-  return (
-    <View style={styles.container}>
+export function detailPage({item, ...props}) {
+  function header() {
+    return (
       <View
         style={{
           height: SIZES.height * 0.25,
@@ -17,16 +20,23 @@ export default function detailPage() {
         <View
           style={{
             flexDirection: 'row',
+            marginTop: SIZES.paddingWide * 2,
           }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => props.saveAttraction(item)}>
             <MaterialIcons name="home" size={SIZES.icon} color={COLORS.white} />
           </TouchableOpacity>
-          <Text>Test</Text>
+          <Text>{item.title}</Text>
         </View>
       </View>
-    </View>
-  );
+    );
+  }
+  return <View style={styles.container}>{header()}</View>;
 }
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({saveAttraction}, dispatch);
+
+export default connect(null, mapDispatchToProps)(detailPage);
 
 const styles = StyleSheet.create({
   container: {

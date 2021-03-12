@@ -1,13 +1,16 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet} from 'react-native';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import {fetchDiscovery} from '../../redux/actions';
 import home from './home';
 import discovery from './discovery';
 import bookmark from './bookmark';
 import {SIZES, COLORS} from '../../constants';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 
 const Tabs = createBottomTabNavigator();
 
@@ -15,7 +18,11 @@ const emptyScreen = () => {
   return null;
 };
 
-export default function tabs() {
+export function tabs(props) {
+  useEffect(() => {
+    props.fetchDiscovery();
+  }, []);
+
   return (
     <Tabs.Navigator
       initialRouteName="home"
@@ -78,6 +85,11 @@ export default function tabs() {
     </Tabs.Navigator>
   );
 }
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({fetchDiscovery}, dispatch);
+
+export default connect(null, mapDispatchToProps)(tabs);
 
 const styles = StyleSheet.create({
   tabs: {
