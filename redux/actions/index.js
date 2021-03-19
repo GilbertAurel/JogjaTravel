@@ -1,6 +1,7 @@
 import {
   ADD_SAVED_ATTRACTION,
   DELETE_SAVED_ATTRACTION,
+  FETCH_CURRENT_LOCATION,
   FETCH_DISCOVERY,
 } from '../constant';
 
@@ -16,14 +17,20 @@ export function deleteAttraction(attraction) {
   };
 }
 
-export function fetchDiscovery() {
-  const url = 'http://10.0.2.2:8080/test';
-
+export function fetchDiscovery(attraction) {
   return (dispatch) => {
-    console.log('fetching data');
-    fetch(url)
-      .then((response) => response.json())
-      .then((json) => dispatch({type: FETCH_DISCOVERY, item: json}))
-      .catch((error) => console.log(error));
+    dispatch({type: FETCH_DISCOVERY, item: attraction});
+  };
+}
+
+export function fetchCurrentLocation(coordinate) {
+  return (dispatch) => {
+    dispatch({
+      type: FETCH_CURRENT_LOCATION,
+      currentLocation: {
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude,
+      },
+    });
   };
 }

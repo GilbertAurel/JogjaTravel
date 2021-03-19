@@ -3,6 +3,7 @@ import {Dimensions, StatusBar} from 'react-native';
 const {width, height} = Dimensions.get('window');
 
 export const GOOGLE_API_KEY = 'AIzaSyCQcVjKLEZh4tYHNxxYgB6cL9iWdJKcT6o';
+export const SERVER = 'http://10.0.2.2:3000';
 
 export const SIZES = {
   width: width,
@@ -27,6 +28,7 @@ export const COLORS = {
 
   lightblue: '#D3E0EA',
   lightgray: '#FAFAFA',
+  mediumgray: '#CCCCCC',
 
   gray: '#636363',
   white: '#fff',
@@ -55,6 +57,7 @@ const appTheme = {
   COLORS: COLORS,
   FONTS: FONTS,
   GOOGLE_API_KEY: GOOGLE_API_KEY,
+  SERVER: SERVER,
 };
 
 export default appTheme;

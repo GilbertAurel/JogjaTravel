@@ -3,13 +3,14 @@ import {StyleSheet} from 'react-native';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import GetLocation from 'react-native-get-location';
+import {connect} from 'react-redux';
+import {fetchCurrentLocation} from '../../redux/actions';
 
-import {fetchDiscovery} from '../../redux/actions';
 import home from './home';
 import discovery from './discovery';
 import bookmark from './bookmark';
 import {SIZES, COLORS} from '../../constants';
-import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 const Tabs = createBottomTabNavigator();
@@ -20,7 +21,22 @@ const emptyScreen = () => {
 
 export function tabs(props) {
   useEffect(() => {
-    props.fetchDiscovery();
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 1500,
+    })
+      .then((location) => {
+        let latitude = location.latitude;
+        let longitude = location.longitude;
+        const currentLocation = {
+          latitude,
+          longitude,
+        };
+        props.fetchCurrentLocation(currentLocation);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   return (
@@ -87,20 +103,19 @@ export function tabs(props) {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({fetchDiscovery}, dispatch);
+  bindActionCreators({fetchCurrentLocation}, dispatch);
 
 export default connect(null, mapDispatchToProps)(tabs);
 
 const styles = StyleSheet.create({
   tabs: {
-    position: 'absolute',
-    height: SIZES.height * 0.08,
-    bottom: SIZES.width * 0.03,
-    left: SIZES.width * 0.03,
-    right: SIZES.width * 0.03,
-    borderRadius: 20,
-    borderTopWidth: 0,
-    elevation: 1,
+    // position: 'absolute',
+    height: SIZES.height * 0.09,
+    // bottom: SIZES.width * 0.03,
+    // left: SIZES.width * 0.03,
+    // right: SIZES.width * 0.03,
+    // borderRadius: 20,
+    // borderTopWidth: 0,
     backgroundColor: COLORS.white,
   },
 });
