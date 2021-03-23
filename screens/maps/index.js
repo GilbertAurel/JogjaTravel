@@ -63,7 +63,7 @@ export default function index({navigation}) {
     };
 
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, position: 'absolute', top: 0, left: 0, right: 0}}>
         <MapView
           provider={PROVIDER_GOOGLE}
           initialRegion={myLocation}

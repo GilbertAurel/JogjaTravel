@@ -2,13 +2,23 @@ import React from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {COLORS, FONTS, SIZES} from '../../constants';
+import {COLORS, FONTS, SIZES, SERVER} from '../../constants';
 
 export default function landing({item, scrollRef}) {
+  const priceRating = () => {
+    if (item.price == 'affordable') return 1;
+    else if (item.price == 'fair') return 2;
+    else return 3;
+  };
+
   return (
     <View style={styles.container}>
       {/* Background image */}
-      <Image source={item.image} resizeMode="cover" style={styles.container} />
+      <Image
+        source={{uri: `${SERVER}/${item.imageURL}`}}
+        resizeMode="cover"
+        style={styles.container}
+      />
 
       {/* darken effect */}
       <View
@@ -51,7 +61,7 @@ export default function landing({item, scrollRef}) {
               key={rating}
               style={{
                 ...FONTS.body2,
-                color: rating <= item.priceRating ? COLORS.white : COLORS.gray,
+                color: rating <= priceRating() ? COLORS.white : COLORS.gray,
               }}>
               $
             </Text>

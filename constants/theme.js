@@ -14,6 +14,7 @@ export const SIZES = {
   radius: 30,
 
   icon: 26,
+  title: 45,
   h1: 28,
   h2: 22,
   h3: 20,
@@ -37,6 +38,11 @@ export const COLORS = {
 };
 
 export const FONTS = {
+  title: {
+    fontFamily: 'whitneysemibold',
+    fontSize: SIZES.title,
+    lineHeight: 50,
+  },
   h1: {fontFamily: 'whitneysemibold', fontSize: SIZES.h1, lineHeight: 30},
   h2: {fontFamily: 'whitneymedium', fontSize: SIZES.h2, lineHeight: 22},
   h3: {fontFamily: 'whitneymedium', fontSize: SIZES.h3, lineHeight: 22},

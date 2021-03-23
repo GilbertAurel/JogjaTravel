@@ -1,5 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Image, StyleSheet, TextInput, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  RefreshControl,
+  TouchableOpacity,
+  StatusBar,
+} from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
@@ -13,6 +23,7 @@ export function index(props) {
   const [loading, setLoading] = useState(true);
   const [attractions, setAttractions] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
+  const [searchAttractions, setSearchAttractions] = useState(null);
 
   useEffect(() => {
     const {discovery, currentLocation} = props;
@@ -34,7 +45,7 @@ export function index(props) {
     }
 
     setCurrentLocation(currentLocation);
-  }, []);
+  }, [props]);
 
   function renderSearch() {
     return (
@@ -47,17 +58,26 @@ export function index(props) {
             position: 'absolute',
             elevation: 1,
             left: SIZES.paddingNormal * 3,
+            bottom: 25,
           }}
         />
         <TextInput
           style={styles.searchBar}
           placeholder="where are you going?"
+          onChangeText={(text) => {
+            setSearchAttractions(() => {
+              return attractions.filter((doc) =>
+                doc.title.toLowerCase().includes(text.toLowerCase()),
+              );
+            });
+          }}
         />
         <View
           style={{
             position: 'absolute',
             elevation: 1,
             right: SIZES.paddingNormal * 3,
+            bottom: 25,
           }}>
           <MaterialIcons
             name="tune"
@@ -85,7 +105,13 @@ export function index(props) {
       };
 
       return (
-        <View style={{...styles.itemContainer, ...styles.dropShadow}}>
+        <TouchableOpacity
+          style={{...styles.itemContainer, ...styles.dropShadow}}
+          onPress={() =>
+            props.navigation.navigate('attraction', {
+              item: item,
+            })
+          }>
           {/* Image */}
           <View style={styles.imageContainer}>
             <Image
@@ -97,26 +123,27 @@ export function index(props) {
             />
           </View>
 
-          {/* Attraction title */}
-          <Text
-            style={{
-              ...FONTS.body1,
-              color: COLORS.black,
-              marginTop: SIZES.paddingNormal,
-            }}>
-            {item.title}
-          </Text>
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            {/* Attraction title */}
+            <Text
+              style={{
+                ...FONTS.h3,
+                color: COLORS.black,
+              }}>
+              {item.title}
+            </Text>
 
-          {/* location */}
-          <Text style={{...FONTS.body2, color: COLORS.black}}>
-            {item.address}
-          </Text>
+            {/* location */}
+            <Text style={{...FONTS.body2, color: COLORS.black}}>
+              {item.address}
+            </Text>
+          </View>
 
           {/* details */}
           <View
             style={{
-              position: 'absolute',
-              bottom: SIZES.paddingNormal,
+              marginBottom: SIZES.paddingNormal,
               flexDirection: 'row',
               width: '80%',
               justifyContent: 'space-between',
@@ -158,22 +185,23 @@ export function index(props) {
               ))}
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       );
     };
 
     return (
       <View style={styles.listContainer}>
         <FlatList
-          data={attractions}
+          data={searchAttractions ? searchAttractions : attractions}
           keyExtractor={(item) => `${item.id}-${item.title}`}
           renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
           numColumns={2}
           ListHeaderComponent={() => {
             return <View style={{height: SIZES.paddingNormal}} />;
           }}
           ListFooterComponent={() => {
-            return <View style={{height: SIZES.height * 0.08}} />;
+            return <View style={{height: SIZES.height * 0.15}} />;
           }}
         />
       </View>
@@ -196,6 +224,13 @@ export function index(props) {
   } else {
     return (
       <View style={styles.container}>
+        <View
+          style={{
+            width: SIZES.width,
+            height: SIZES.paddingWide,
+            backgroundColor: COLORS.primary,
+          }}
+        />
         {renderSearch()}
         {renderAttractions()}
       </View>
@@ -219,15 +254,16 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lightgray,
   },
   searchContainer: {
-    height: SIZES.height * 0.08,
+    height: SIZES.height * 0.1,
     width: SIZES.width,
     backgroundColor: COLORS.primary,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
   },
   searchBar: {
-    height: '50%',
+    height: 30,
     width: SIZES.width * 0.9,
+    marginBottom: 20,
     borderRadius: SIZES.radius,
     paddingVertical: 0,
     paddingHorizontal: SIZES.paddingNormal,
@@ -236,13 +272,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   listContainer: {
-    alignItems: 'center',
+    // alignItems: 'center',
     justifyContent: 'center',
   },
   itemContainer: {
-    height: SIZES.height * 0.32,
+    height: SIZES.height * 0.25,
     width: SIZES.width * 0.44,
-    marginHorizontal: (SIZES.width * 0.05) / 3,
+    // marginHorizontal: (SIZES.width * 0.05) / 3,
+    marginLeft: (SIZES.width * 0.12) / 3,
     marginVertical: (SIZES.width * 0.05) / 3,
     borderRadius: SIZES.radius * 0.5,
     alignItems: 'center',

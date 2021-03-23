@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -17,6 +18,7 @@ import {
   NEWS,
   CATEGORIES,
   POPULAR,
+  MENU,
 } from '../../../constants';
 
 export default function body({navigation}) {
@@ -25,6 +27,59 @@ export default function body({navigation}) {
   const [category, setCategory] = useState([{title: 'all'}, ...CATEGORIES]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [popularList, setPopularList] = useState(POPULAR);
+
+  // QUICK MENU
+  function renderQuickMenu() {
+    const renderItem = ({item}) => {
+      return (
+        <View>
+          {item.map((menu, index) => (
+            <TouchableOpacity
+              key={index}
+              style={{...styles.quickMenu}}
+              onPress={() => navigation.navigate(menu.tag)}>
+              <MaterialIcons
+                name={menu.icon}
+                size={SIZES.icon}
+                color={COLORS.primary}
+                style={{
+                  marginLeft: SIZES.paddingWide,
+                }}
+              />
+              <Text style={{...FONTS.body1, marginLeft: SIZES.paddingNormal}}>
+                {menu.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      );
+    };
+    return (
+      <View style={styles.quickMenuContainer}>
+        <Text
+          style={{
+            ...FONTS.h3,
+            ...styles.card,
+            marginBottom: SIZES.paddingWide,
+          }}>
+          Quick menu
+        </Text>
+        <FlatList
+          data={MENU}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item, index) => `${index}`}
+          renderItem={renderItem}
+          ListHeaderComponent={() => {
+            return <View style={{width: SIZES.paddingWide}} />;
+          }}
+          ListFooterComponent={() => {
+            return <View style={{width: SIZES.paddingWide}} />;
+          }}
+        />
+      </View>
+    );
+  }
 
   // NEWS & UPDATE
   function renderCarouselNews() {
@@ -63,6 +118,13 @@ export default function body({navigation}) {
                 resizeMode="cover"
                 style={styles.newsImage}
               />
+              <View style={styles.newsHeadlineContainer}>
+                <Text style={{...FONTS.h2}}>{item.headline}</Text>
+                <Text style={{...FONTS.body2}}>
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Cumque, porro! Fugit quisquam commodi enim laudantium?
+                </Text>
+              </View>
             </TouchableOpacity>
           ))}
         </Animated.ScrollView>
@@ -219,6 +281,7 @@ export default function body({navigation}) {
 
   return (
     <View style={styles.container}>
+      {renderQuickMenu()}
       {renderNews()}
       {renderPopularCategory()}
     </View>
@@ -227,15 +290,35 @@ export default function body({navigation}) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: COLORS.white,
   },
   card: {
+    marginTop: SIZES.paddingWide * 2,
+    paddingHorizontal: SIZES.paddingWide * 1.5,
+  },
+  quickMenuContainer: {
     marginTop: SIZES.paddingWide * 1.5,
-    paddingHorizontal: SIZES.paddingWide,
+    elevation: 1,
+  },
+  quickMenu: {
+    width: 180,
+    height: 50,
+    marginBottom: SIZES.paddingNormal,
+    marginHorizontal: SIZES.paddingNormal * 0.5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: 15,
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.01,
+    shadowRadius: 2.0,
+    elevation: 1,
   },
   newsCarousel: {
-    height: SIZES.height * 0.25,
     width: SIZES.width,
     alignItems: 'center',
   },
@@ -243,14 +326,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     elevation: 1,
     top: SIZES.height * 0.25 * 0.05,
-    left: 30,
+    left: SIZES.width * 0.1,
     flexDirection: 'row',
     alignItems: 'center',
   },
   newsImage: {
-    height: '100%',
-    width: SIZES.width - SIZES.paddingWide * 2,
-    borderRadius: SIZES.height * 0.25 * 0.05,
+    height: 170,
+    width: SIZES.width - SIZES.paddingWide * 3,
+    borderTopLeftRadius: SIZES.height * 0.25 * 0.05,
+    borderTopRightRadius: SIZES.height * 0.25 * 0.05,
+  },
+  newsHeadlineContainer: {
+    width: SIZES.width - SIZES.paddingWide * 3,
+    marginTop: SIZES.paddingNormal,
   },
   popularCategory: {
     marginVertical: 10,
@@ -261,8 +349,8 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
   },
   popularList: {
-    height: 170,
-    width: 120,
+    height: 200,
+    width: 150,
     borderRadius: 10,
     backgroundColor: COLORS.secondary,
   },

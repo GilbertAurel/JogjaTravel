@@ -1,43 +1,119 @@
 import React from 'react';
-import {View, Text, TextInput, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  Image,
+} from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import {COLORS, FONTS, SIZES, MENU} from '../../../constants';
+import {COLORS, FONTS, SIZES, MENU, IMAGE} from '../../../constants';
 
 export default function header({navigation}) {
-  function renderTitle() {
+  function renderBackground() {
     return (
       <View
         style={{
-          marginTop: SIZES.StatusBar * 3,
-          paddingHorizontal: SIZES.paddingWide,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
+          ...styles.container,
         }}>
+        <View
+          style={{
+            ...styles.container,
+            ...styles.darken,
+            position: 'absolute',
+            elevation: 1,
+          }}
+        />
+        <Image
+          source={IMAGE.HEADER_HOME}
+          resizeMode="contain"
+          style={{
+            position: 'absolute',
+            left: -300,
+            top: -70,
+          }}
+        />
+      </View>
+    );
+  }
+
+  function renderTitle() {
+    return (
+      <View style={styles.titleContainer}>
         <Text
           style={{
-            ...FONTS.h1,
-            width: SIZES.width * 0.75,
+            ...FONTS.title,
             color: COLORS.white,
           }}>
-          Are you ready to start your adventure?
+          Culture
+        </Text>
+        <Text
+          style={{
+            ...FONTS.title,
+            color: COLORS.white,
+          }}>
+          Nature
+        </Text>
+        <Text
+          style={{
+            ...FONTS.title,
+            color: COLORS.white,
+          }}>
+          Adventure.
         </Text>
         <TouchableOpacity
           style={{
-            width: SIZES.icon * 1.5,
-            height: SIZES.icon * 1.5,
+            width: SIZES.width * 0.4,
+            height: SIZES.icon,
+            marginTop: SIZES.paddingNormal,
             borderRadius: SIZES.radius,
             justifyContent: 'center',
             alignItems: 'center',
             backgroundColor: COLORS.secondary,
           }}>
+          <Text style={{...FONTS.body1, color: COLORS.white}}>
+            Browse Attractions
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  function renderTopBar() {
+    return (
+      <View
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 50,
+          elevation: 2,
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            width: SIZES.width * 0.8,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
+          <Image
+            source={IMAGE.LOGO}
+            resizeMode="contain"
+            style={{
+              height: 30,
+              width: 70,
+            }}
+          />
           <MaterialIcons
             name="notifications-none"
             size={SIZES.icon}
             color={COLORS.white}
           />
-        </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -132,10 +208,26 @@ export default function header({navigation}) {
   }
 
   return (
-    <View>
+    <View style={styles.container}>
+      {renderBackground()}
+      {renderTopBar()}
       {renderTitle()}
-      {renderSearchBar()}
-      {renderCategories()}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: SIZES.height * 0.7,
+    width: SIZES.width,
+  },
+  titleContainer: {
+    position: 'absolute',
+    left: SIZES.width * 0.1,
+    top: SIZES.height * 0.35,
+    elevation: 2,
+  },
+  darken: {
+    backgroundColor: 'rgba(0,0,0,0.8)',
+  },
+});

@@ -9,13 +9,10 @@ import HomeBody from './body';
 
 export default function home(props) {
   return (
-    <>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <HomeHeader {...props} />
-        <HomeBody {...props} />
-      </ScrollView>
-    </>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <HomeHeader {...props} />
+      <HomeBody {...props} />
+    </ScrollView>
   );
 }
 
