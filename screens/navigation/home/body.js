@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  ScrollView,
 } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -36,19 +35,15 @@ export default function body({navigation}) {
           {item.map((menu, index) => (
             <TouchableOpacity
               key={index}
-              style={{...styles.quickMenu}}
+              style={styles.quickMenuButton}
               onPress={() => navigation.navigate(menu.tag)}>
               <MaterialIcons
                 name={menu.icon}
                 size={SIZES.icon}
                 color={COLORS.primary}
-                style={{
-                  marginLeft: SIZES.paddingWide,
-                }}
+                style={styles.quickMenuIcon}
               />
-              <Text style={{...FONTS.body1, marginLeft: SIZES.paddingNormal}}>
-                {menu.name}
-              </Text>
+              <Text style={styles.quickMenuLabel}>{menu.name}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -56,14 +51,7 @@ export default function body({navigation}) {
     };
     return (
       <View style={styles.quickMenuContainer}>
-        <Text
-          style={{
-            ...FONTS.h3,
-            ...styles.card,
-            marginBottom: SIZES.paddingWide,
-          }}>
-          Quick menu
-        </Text>
+        <Text style={styles.quickMenuTitle}>Quick menu</Text>
         <FlatList
           data={MENU}
           horizontal
@@ -82,17 +70,17 @@ export default function body({navigation}) {
   }
 
   // NEWS & UPDATE
-  function renderCarouselNews() {
+  function renderNewsContent() {
     return (
       <View>
-        <Text style={{...FONTS.h3, ...styles.card}}>News & Updates</Text>
+        <Text style={styles.newsTitle}>News & Updates</Text>
         <Animated.ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled
           scrollEventThrottle={16}
           snapToAlignment="center"
-          style={{marginTop: SIZES.paddingNormal}}
+          style={styles.newsAnimatedScrollView}
           onScroll={Animated.event(
             [{nativeEvent: {contentOffset: {x: scrollX}}}],
             {useNativeDriver: false},
@@ -102,14 +90,13 @@ export default function body({navigation}) {
               key={index}
               style={styles.newsCarousel}
               activeOpacity={1}>
-              <View style={styles.newsLocationLabel}>
+              <View style={styles.newsLocationLabelContainer}>
                 <MaterialIcons
                   name="location-on"
                   color={COLORS.white}
                   size={SIZES.icon * 0.5}
                 />
-                <Text
-                  style={{...FONTS.body1, color: COLORS.white, marginLeft: 5}}>
+                <Text style={styles.newsLocationLabelText}>
                   {item.location}
                 </Text>
               </View>
@@ -119,8 +106,8 @@ export default function body({navigation}) {
                 style={styles.newsImage}
               />
               <View style={styles.newsHeadlineContainer}>
-                <Text style={{...FONTS.h2}}>{item.headline}</Text>
-                <Text style={{...FONTS.body2}}>
+                <Text style={styles.newsHeadline}>{item.headline}</Text>
+                <Text style={styles.newsSubHeadline}>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   Cumque, porro! Fugit quisquam commodi enim laudantium?
                 </Text>
@@ -137,13 +124,7 @@ export default function body({navigation}) {
 
     return (
       <View style={{height: 30}}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: 30,
-          }}>
+        <View style={styles.dotsContainer}>
           {NEWS.map((item, index) => {
             const dotOpacity = dotPosition.interpolate({
               inputRange: [index - 1, index, index + 1],
@@ -174,8 +155,7 @@ export default function body({navigation}) {
                 key={index}
                 opacity={dotOpacity}
                 style={{
-                  borderRadius: SIZES.radius,
-                  marginHorizontal: 6,
+                  ...styles.dotsAnimatedView,
                   width: dotSizeWidth,
                   height: dotSizeHeight,
                   backgroundColor: dotColor,
@@ -191,7 +171,7 @@ export default function body({navigation}) {
   function renderNews() {
     return (
       <View>
-        {renderCarouselNews()}
+        {renderNewsContent()}
         {renderDots()}
       </View>
     );
@@ -300,7 +280,13 @@ const styles = StyleSheet.create({
     marginTop: SIZES.paddingWide * 1.5,
     elevation: 1,
   },
-  quickMenu: {
+  quickMenuTitle: {
+    ...FONTS.h3,
+    marginTop: SIZES.paddingWide * 2,
+    paddingHorizontal: SIZES.paddingWide * 1.5,
+    marginBottom: SIZES.paddingWide,
+  },
+  quickMenuButton: {
     width: 180,
     height: 50,
     marginBottom: SIZES.paddingNormal,
@@ -318,17 +304,37 @@ const styles = StyleSheet.create({
     shadowRadius: 2.0,
     elevation: 1,
   },
+  quickMenuIcon: {
+    marginLeft: SIZES.paddingWide,
+  },
+  quickMenuLabel: {
+    ...FONTS.body1,
+    marginLeft: SIZES.paddingNormal,
+  },
   newsCarousel: {
     width: SIZES.width,
     alignItems: 'center',
   },
-  newsLocationLabel: {
+  newsTitle: {
+    ...FONTS.h3,
+    marginTop: SIZES.paddingWide * 2,
+    paddingHorizontal: SIZES.paddingWide * 1.5,
+  },
+  newsAnimatedScrollView: {
+    marginTop: SIZES.paddingNormal,
+  },
+  newsLocationLabelContainer: {
     position: 'absolute',
     elevation: 1,
     top: SIZES.height * 0.25 * 0.05,
     left: SIZES.width * 0.1,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  newsLocationLabelText: {
+    ...FONTS.body1,
+    color: COLORS.white,
+    marginLeft: 5,
   },
   newsImage: {
     height: 170,
@@ -339,6 +345,22 @@ const styles = StyleSheet.create({
   newsHeadlineContainer: {
     width: SIZES.width - SIZES.paddingWide * 3,
     marginTop: SIZES.paddingNormal,
+  },
+  newsHeadline: {
+    ...FONTS.h2,
+  },
+  newsSubHeadline: {
+    ...FONTS.body2,
+  },
+  dotsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 30,
+  },
+  dotsAnimatedView: {
+    borderRadius: SIZES.radius,
+    marginHorizontal: 6,
   },
   popularCategory: {
     marginVertical: 10,

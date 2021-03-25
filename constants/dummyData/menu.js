@@ -6,9 +6,9 @@ export const categories = [
       tag: 'events',
     },
     {
-      name: 'Tour Package',
-      icon: 'work',
-      tag: 'tour',
+      name: 'Attractions',
+      icon: 'room',
+      tag: 'listing',
     },
   ],
   [

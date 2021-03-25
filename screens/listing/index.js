@@ -14,9 +14,9 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {fetchDiscovery} from '../../../redux/actions';
+import {fetchDiscovery} from '../../redux/actions';
 
-import {COLORS, FONTS, SIZES, SERVER} from '../../../constants';
+import {COLORS, FONTS, SIZES, SERVER} from '../../constants';
 import {getDistance} from 'geolib';
 
 export function index(props) {

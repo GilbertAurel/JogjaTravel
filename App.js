@@ -7,16 +7,14 @@ import thunk from 'redux-thunk';
 import {Provider} from 'react-redux';
 import rootReducer from './redux/reducers';
 
-import home from './screens/landing/tabs';
+import home from './screens/navigation/tabs';
 import attractionPage from './screens/attraction';
 import maps from './screens/maps';
 import login from './screens/login/login';
 import events from './screens/todo/events';
-import tour from './screens/todo/tour';
+import listingPage from './screens/listing';
 import transport from './screens/todo/transport';
 import help from './screens/todo/help';
-
-import {MENU} from './constants';
 
 const Stack = createStackNavigator();
 
@@ -36,7 +34,7 @@ export default function App() {
             <Stack.Screen component={home} name="home" />
             <Stack.Screen component={attractionPage} name="attraction" />
             <Stack.Screen component={events} name="events" />
-            <Stack.Screen component={tour} name="tour" />
+            <Stack.Screen component={listingPage} name="listing" />
             <Stack.Screen component={transport} name="transport" />
             <Stack.Screen component={maps} name="maps" />
             <Stack.Screen component={help} name="help" />

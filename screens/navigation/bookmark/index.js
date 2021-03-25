@@ -9,15 +9,31 @@ import {
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
-import {COLORS, FONTS, SIZES} from '../../../constants';
+import {bindActionCreators} from 'redux';
+import {COLORS, FONTS, SERVER, SIZES} from '../../../constants';
+import {saveAttraction} from '../../../redux/actions';
 import {attraction} from '../../../redux/reducers/attraction';
+import {fetchDiscovery} from '../../../redux/actions';
+import {FlatList} from 'react-native-gesture-handler';
 
 export function index(props) {
   const [attractions, setAttractions] = useState([]);
 
   useEffect(() => {
     const {savedAttraction} = props;
-    setAttractions(savedAttraction);
+    if (!savedAttraction) {
+      const url = `${SERVER}/attractions/attraction.json`;
+
+      fetch(url)
+        .then((response) => response.json())
+        .then((json) => {
+          setAttractions(json);
+          props.fetchDiscovery(json);
+        })
+        .catch((error) => console.log(error));
+    } else {
+      setAttractions(savedAttraction);
+    }
   }, [props.savedAttraction]);
 
   function renderSearch() {
@@ -55,21 +71,45 @@ export function index(props) {
     );
   }
 
-  function renderSavedAttractions() {
+  function renderNoData() {
     return (
       <View
         style={{
+          flex: 1,
           alignItems: 'center',
+          justifyContent: 'center',
         }}>
-        {attractions.map((a) => (
-          <View>
-            <TouchableOpacity
-              key={a.id}
-              style={{...FONTS.h2, color: COLORS.gray, marginTop: 10}}>
-              <Text>{a.title}</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+        <MaterialIcons
+          name="bookmark"
+          size={SIZES.icon * 4}
+          color={COLORS.gray}
+        />
+        <Text style={{...FONTS.h2, color: COLORS.gray, marginTop: 10}}>
+          No data
+        </Text>
+      </View>
+    );
+  }
+
+  function renderSavedAttractions() {
+    const renderItem = ({item}) => {
+      return (
+        <View>
+          <Text>{item.title}</Text>
+        </View>
+      );
+    };
+
+    return (
+      <View
+        style={{
+          flex: 1,
+        }}>
+        <FlatList
+          data={attractions}
+          keyExtractor={(item, index) => `${index}`}
+          renderItem={renderItem}
+        />
       </View>
     );
   }
@@ -84,34 +124,20 @@ export function index(props) {
         }}
       />
       {renderSearch()}
-      {attractions.length == 0 ? (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <MaterialIcons
-            name="bookmark"
-            size={SIZES.icon * 4}
-            color={COLORS.gray}
-          />
-          <Text style={{...FONTS.h2, color: COLORS.gray, marginTop: 10}}>
-            No data
-          </Text>
-        </View>
-      ) : (
-        renderSavedAttractions()
-      )}
+      {attractions.length == 0 ? renderNoData() : renderSavedAttractions()}
     </View>
   );
 }
 
 const mapStateToProps = (store) => ({
-  savedAttraction: store.attractionState.savedAttraction,
+  savedAttraction: store.discoveryState.item,
 });
 
-export default connect(mapStateToProps, null)(index);
+// DELETE THIS
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({fetchDiscovery}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(index);
 
 const styles = StyleSheet.create({
   container: {

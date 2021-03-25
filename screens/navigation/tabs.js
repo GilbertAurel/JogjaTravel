@@ -116,13 +116,10 @@ export default connect(null, mapDispatchToProps)(tabs);
 
 const styles = StyleSheet.create({
   tabs: {
-    // position: 'absolute',
+    position: 'absolute',
     height: 60,
-    // bottom: SIZES.width * 0.03,
-    // left: SIZES.width * 0.03,
-    // right: SIZES.width * 0.03,
-    // borderRadius: 20,
-    // borderTopWidth: 0,
-    backgroundColor: COLORS.white,
+    borderTopWidth: 0,
+    elevation: 0,
+    backgroundColor: 'transparent',
   },
 });
