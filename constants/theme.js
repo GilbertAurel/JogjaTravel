@@ -18,9 +18,9 @@ export const SIZES = {
   h1: 28,
   h2: 22,
   h3: 20,
-  body1: 16,
-  body2: 14,
-  body3: 12,
+  body1: 18,
+  body2: 16,
+  body3: 14,
 };
 
 export const COLORS = {

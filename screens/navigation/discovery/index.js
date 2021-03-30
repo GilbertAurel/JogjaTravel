@@ -58,6 +58,7 @@ export default function index() {
               if (!galeryButton) {
                 setGaleryButton(true);
                 setInformationButton(false);
+                galeriesScrollX.setValue(0);
               }
             }}>
             <Text style={styles.headerButtonLabel}>Galery</Text>
@@ -180,6 +181,10 @@ export default function index() {
                         borderRadius: 20,
                       }}
                     />
+                    <Text style={styles.bodyImageLabel}>Main title</Text>
+                    <Text style={styles.bodyImageLocation}>
+                      street, location
+                    </Text>
                   </Animated.View>
                 );
               }
@@ -377,6 +382,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  bodyImageLabel: {
+    position: 'absolute',
+    right: 50,
+    bottom: 60,
+    ...FONTS.h1,
+    color: COLORS.white,
+  },
+  bodyImageLocation: {
+    position: 'absolute',
+    right: 50,
+    bottom: 40,
+    ...FONTS.h2,
+    color: COLORS.white,
   },
   bodyTextContainer: {
     position: 'absolute',

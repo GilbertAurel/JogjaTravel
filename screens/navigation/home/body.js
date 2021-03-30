@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import LinearGradient from 'react-native-linear-gradient';
 import {
   COLORS,
   FONTS,
@@ -89,7 +90,20 @@ export default function body({navigation}) {
             <TouchableOpacity
               key={index}
               style={styles.newsCarousel}
-              activeOpacity={1}>
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate('news', {news: item})}>
+              <Image
+                source={item.cover}
+                resizeMode="cover"
+                style={styles.newsImage}
+              />
+              <LinearGradient
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 2}}
+                colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.5)']}
+                style={{...styles.newsImage, ...styles.newsDarkenBackground}}
+              />
+              <Text style={styles.newsHeadline}>{item.headline}</Text>
               <View style={styles.newsLocationLabelContainer}>
                 <MaterialIcons
                   name="location-on"
@@ -98,18 +112,6 @@ export default function body({navigation}) {
                 />
                 <Text style={styles.newsLocationLabelText}>
                   {item.location}
-                </Text>
-              </View>
-              <Image
-                source={item.cover}
-                resizeMode="cover"
-                style={styles.newsImage}
-              />
-              <View style={styles.newsHeadlineContainer}>
-                <Text style={styles.newsHeadline}>{item.headline}</Text>
-                <Text style={styles.newsSubHeadline}>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Cumque, porro! Fugit quisquam commodi enim laudantium?
                 </Text>
               </View>
             </TouchableOpacity>
@@ -146,7 +148,7 @@ export default function body({navigation}) {
 
             const dotColor = dotPosition.interpolate({
               inputRange: [index - 1, index, index + 1],
-              outputRange: [COLORS.lightblue, COLORS.primary, COLORS.lightblue],
+              outputRange: [COLORS.primary, COLORS.primary, COLORS.primary],
               extrapolate: 'clamp',
             });
 
@@ -199,7 +201,8 @@ export default function body({navigation}) {
             backgroundColor:
               item.title == selectedCategory ? COLORS.primary : COLORS.white,
           }}
-          onPress={() => onClickCategory(item)}>
+          onPress={() => onClickCategory(item)}
+          activeOpacity={0.8}>
           <Text
             style={{
               ...FONTS.body1,
@@ -231,19 +234,32 @@ export default function body({navigation}) {
     const renderItem = ({item}) => {
       return (
         <TouchableOpacity
-          style={{marginRight: 10}}
+          style={styles.popularListContainer}
           onPress={() =>
             navigation.navigate('attraction', {
               item: item,
             })
           }
-          activeOpacity={1}>
+          activeOpacity={0.8}>
           <Image
             source={item.image}
             resizeMode="cover"
             style={styles.popularList}
           />
-          <Text style={styles.popularListLabel}>{item.title}</Text>
+          <Text
+            style={styles.popularListLabel}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            {item.title}
+          </Text>
+          <View style={styles.popularListRating}>
+            <MaterialIcons
+              name="star"
+              size={SIZES.body1}
+              color={COLORS.yellow}
+            />
+            <Text style={{...FONTS.body3}}>{item.rating}</Text>
+          </View>
         </TouchableOpacity>
       );
     };
@@ -326,8 +342,8 @@ const styles = StyleSheet.create({
   newsLocationLabelContainer: {
     position: 'absolute',
     elevation: 1,
-    top: SIZES.height * 0.25 * 0.05,
-    left: SIZES.width * 0.1,
+    bottom: '5%',
+    right: '10%',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -337,20 +353,21 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   newsImage: {
-    height: 170,
+    height: 220,
     width: SIZES.width - SIZES.paddingWide * 3,
-    borderTopLeftRadius: SIZES.height * 0.25 * 0.05,
-    borderTopRightRadius: SIZES.height * 0.25 * 0.05,
+    borderRadius: SIZES.height * 0.25 * 0.05,
   },
-  newsHeadlineContainer: {
-    width: SIZES.width - SIZES.paddingWide * 3,
-    marginTop: SIZES.paddingNormal,
+  newsDarkenBackground: {
+    position: 'absolute',
   },
   newsHeadline: {
+    position: 'absolute',
+    bottom: '15%',
+    right: '10%',
+    width: '50%',
+    textAlign: 'right',
+    color: COLORS.white,
     ...FONTS.h2,
-  },
-  newsSubHeadline: {
-    ...FONTS.body2,
   },
   dotsContainer: {
     flexDirection: 'row',
@@ -367,20 +384,33 @@ const styles = StyleSheet.create({
     marginRight: 8,
     paddingHorizontal: 20,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: COLORS.primary,
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.01,
+    shadowRadius: 2.0,
+    elevation: 1,
+  },
+  popularListContainer: {
+    width: 150,
+    marginRight: 10,
   },
   popularList: {
     height: 200,
     width: 150,
     borderRadius: 10,
-    backgroundColor: COLORS.secondary,
   },
   popularListLabel: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    ...FONTS.body2,
-    color: COLORS.white,
+    flex: 1,
+    width: '70%',
+    marginTop: SIZES.paddingNormal * 0.5,
+    ...FONTS.body1,
+    color: COLORS.black,
+  },
+  popularListRating: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

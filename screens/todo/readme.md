@@ -1,10 +1,12 @@
-optimization:
--home beres
--app beres
+done:
+-attraction listing
+-news
+-discovery
 
 todo:
--profile
--listing
--login
--attractions
+-attraction page
+-event
+-tour guide
+-transport
 -maps
+-help

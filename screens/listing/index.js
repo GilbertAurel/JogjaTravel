@@ -20,6 +20,7 @@ import {COLORS, FONTS, SIZES, SERVER} from '../../constants';
 import {getDistance} from 'geolib';
 
 export function index(props) {
+  const {navigation} = props;
   const [loading, setLoading] = useState(true);
   const [attractions, setAttractions] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -50,17 +51,15 @@ export function index(props) {
   function renderSearch() {
     return (
       <View style={styles.searchContainer}>
-        <MaterialIcons
-          name="search"
-          color={COLORS.primary}
-          size={SIZES.icon * 0.8}
-          style={{
-            position: 'absolute',
-            elevation: 1,
-            left: SIZES.paddingNormal * 3,
-            bottom: 25,
-          }}
-        />
+        <TouchableOpacity
+          style={styles.searchBarButton}
+          onPress={() => navigation.goBack()}>
+          <MaterialIcons
+            name="arrow-back"
+            color={COLORS.primary}
+            size={SIZES.icon * 0.8}
+          />
+        </TouchableOpacity>
         <TextInput
           style={styles.searchBar}
           placeholder="where are you going?"
@@ -72,19 +71,13 @@ export function index(props) {
             });
           }}
         />
-        <View
-          style={{
-            position: 'absolute',
-            elevation: 1,
-            right: SIZES.paddingNormal * 3,
-            bottom: 25,
-          }}>
+        <TouchableOpacity style={styles.searchBarButton}>
           <MaterialIcons
             name="tune"
             color={COLORS.primary}
             size={SIZES.icon * 0.8}
           />
-        </View>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -108,7 +101,7 @@ export function index(props) {
         <TouchableOpacity
           style={{...styles.itemContainer, ...styles.dropShadow}}
           onPress={() =>
-            props.navigation.navigate('attraction', {
+            navigation.navigate('attraction', {
               item: item,
             })
           }>
@@ -224,11 +217,13 @@ export function index(props) {
   } else {
     return (
       <View style={styles.container}>
+        <StatusBar barStyle="dark-content" />
         <View
           style={{
             width: SIZES.width,
             height: SIZES.paddingWide,
-            backgroundColor: COLORS.primary,
+            backgroundColor: COLORS.white,
+            elevation: 1,
           }}
         />
         {renderSearch()}
@@ -256,20 +251,34 @@ const styles = StyleSheet.create({
   searchContainer: {
     height: SIZES.height * 0.1,
     width: SIZES.width,
-    backgroundColor: COLORS.primary,
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: SIZES.paddingWide,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.white,
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.01,
+    shadowRadius: 2.0,
+    elevation: 1,
   },
   searchBar: {
     height: 30,
-    width: SIZES.width * 0.9,
-    marginBottom: 20,
+    width: SIZES.width * 0.7,
     borderRadius: SIZES.radius,
     paddingVertical: 0,
     paddingHorizontal: SIZES.paddingNormal,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.lightgray,
     ...FONTS.body2,
     textAlign: 'center',
+  },
+  searchBarButton: {
+    marginHorizontal: 10,
   },
   listContainer: {
     // alignItems: 'center',

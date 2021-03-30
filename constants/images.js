@@ -9,6 +9,7 @@ import malioboro from '../assets/images/malioboro.png';
 import merapiTour from '../assets/images/merapiTour.png';
 import tempoGelato from '../assets/images/tempo.png';
 import HEADER_HOME from '../assets/images/HEADER_HOME.png';
+import HEADER_EVENT from '../assets/images/HEADER_EVENT.png';
 import LOGO from '../assets/images/jogjaLogo.png';
 
 export default {
@@ -23,5 +24,6 @@ export default {
   merapiTour,
   tempoGelato,
   HEADER_HOME,
+  HEADER_EVENT,
   LOGO,
 };

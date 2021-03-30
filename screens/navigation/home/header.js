@@ -5,7 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import {COLORS, FONTS, SIZES, IMAGE} from '../../../constants';
 
-export default function header() {
+export default function header({navigation}) {
   function renderBackground() {
     return (
       <View
@@ -35,7 +35,9 @@ export default function header() {
         <Text style={styles.title}>Culture</Text>
         <Text style={styles.title}>Nature</Text>
         <Text style={styles.title}>Adventure.</Text>
-        <TouchableOpacity style={styles.browseButton}>
+        <TouchableOpacity
+          style={styles.browseButton}
+          onPress={() => navigation.navigate('listing')}>
           <Text style={styles.browseLabel}>Browse Attractions</Text>
         </TouchableOpacity>
       </View>

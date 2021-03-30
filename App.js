@@ -11,19 +11,18 @@ import home from './screens/navigation/tabs';
 import attractionPage from './screens/attraction';
 import maps from './screens/maps';
 import login from './screens/login/login';
-import events from './screens/todo/events';
 import listingPage from './screens/listing';
-import transport from './screens/todo/transport';
-import help from './screens/todo/help';
+import news from './screens/news';
+import events from './screens/events';
 
 const Stack = createStackNavigator();
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
 export default function App() {
-  const [logged, setLogged] = useState(false);
+  const [logged, setLogged] = useState(true);
 
-  if (!logged) {
+  if (logged) {
     return (
       <Provider store={store}>
         <NavigationContainer>
@@ -33,11 +32,10 @@ export default function App() {
             mode="card">
             <Stack.Screen component={home} name="home" />
             <Stack.Screen component={attractionPage} name="attraction" />
-            <Stack.Screen component={events} name="events" />
             <Stack.Screen component={listingPage} name="listing" />
-            <Stack.Screen component={transport} name="transport" />
+            <Stack.Screen component={news} name="news" />
+            <Stack.Screen component={events} name="events" />
             <Stack.Screen component={maps} name="maps" />
-            <Stack.Screen component={help} name="help" />
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

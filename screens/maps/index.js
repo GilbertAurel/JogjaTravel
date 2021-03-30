@@ -6,13 +6,18 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  ScrollView,
+  FlatList,
+  Image,
+  Animated,
 } from 'react-native';
 
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import GetLocation from 'react-native-get-location';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import {COLORS, FONTS, SIZES} from '../../constants';
+import {COLORS, FONTS, IMAGE, SIZES} from '../../constants';
+import {connect} from 'react-redux';
 
 const initialLocation = {
   latitude: -7.782520944656917,
@@ -21,9 +26,19 @@ const initialLocation = {
   longitudeDelta: 0.00421 * 2,
 };
 
-export default function index({navigation}) {
+export function index(props) {
+  const {navigation} = props;
   const mapRef = useRef();
+  const scrollY = useRef(new Animated.Value(0)).current;
+
   const [myLocation, setMyLocation] = useState(initialLocation);
+  const [attraction, setAttraction] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+
+  const mapHeight = scrollY.interpolate({
+    inputRange: [0, 100],
+    outputRange: [SIZES.height, SIZES.height - 100],
+  });
 
   useEffect(() => {
     GetLocation.getCurrentPosition({
@@ -44,6 +59,19 @@ export default function index({navigation}) {
       .catch((error) => {
         console.log(error);
       });
+
+    // const {savedAttraction} = props;
+    const dummy = [
+      {
+        title: 'test',
+      },
+      {
+        title: 'test',
+      },
+    ];
+
+    setAttraction(dummy);
+    setLoaded(true);
   }, []);
 
   function renderMap() {
@@ -63,12 +91,12 @@ export default function index({navigation}) {
     };
 
     return (
-      <View style={{flex: 1, position: 'absolute', top: 0, left: 0, right: 0}}>
+      <View style={styles.mapContainer}>
         <MapView
           provider={PROVIDER_GOOGLE}
           initialRegion={myLocation}
           ref={mapRef}
-          style={{width: SIZES.width, height: SIZES.height + 40}}>
+          style={{...styles.map}}>
           {currentLocationMarker()}
         </MapView>
       </View>
@@ -108,35 +136,133 @@ export default function index({navigation}) {
     );
   }
 
-  function renderMapFunction() {
+  function renderShowAttraction() {
     return (
-      <View style={styles.mapFunctionContainer}>
-        <TouchableOpacity style={styles.bookmarkButton}>
-          <Text style={{...FONTS.body1, color: COLORS.white, marginLeft: 10}}>
-            My Saved Location
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView
+        stickyHeaderIndices={[0]}
+        showsVerticalScrollIndicator={false}
+        style={styles.showScroll}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  y: scrollY,
+                },
+              },
+            },
+          ],
+          {useNativeDriver: false},
+        )}>
+        {renderMap()}
+        <View style={styles.showContainer}>
+          <View style={styles.showScrollIndicator} />
+          {attraction.length > 1 ? (
+            <Text style={styles.showLabel}>Saved Attractions</Text>
+          ) : (
+            <Text style={styles.showLabel}>No Saved Attractions</Text>
+          )}
+          {attraction.map((item, index) => {
+            return (
+              <View key={index} style={styles.attractionContainer}>
+                {/* Image */}
+                <TouchableOpacity style={styles.attractionImageContainer}>
+                  <Image
+                    source={IMAGE.bakpiaTugu}
+                    resizeMode="cover"
+                    style={styles.attractionImage}
+                  />
+                </TouchableOpacity>
+
+                {/* Details */}
+                <View style={styles.attractionDetails}>
+                  <Text style={styles.attractionTitle}>Attraction Title</Text>
+                  <Text style={styles.attractionLocation}>
+                    Street, Location
+                  </Text>
+                  <View style={styles.attractionRateContainer}>
+                    <View style={styles.attractionRating}>
+                      <MaterialIcons
+                        name="star"
+                        size={SIZES.icon * 0.7}
+                        color={COLORS.yellow}
+                      />
+                      <Text style={styles.attractionSubtitle}>5.0</Text>
+                    </View>
+                    <View style={styles.attractionDistance}>
+                      <MaterialIcons
+                        name="directions-run"
+                        size={SIZES.icon * 0.7}
+                        color={COLORS.primary}
+                      />
+                      <Text style={styles.attractionSubtitle}>100km</Text>
+                    </View>
+                  </View>
+                </View>
+
+                {/* Functions */}
+                <View style={styles.attractionButtonContainer}>
+                  <TouchableOpacity style={styles.attractionButton}>
+                    <MaterialIcons
+                      name="room"
+                      size={SIZES.icon}
+                      color={COLORS.primary}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.attractionButton}>
+                    <MaterialIcons
+                      name="directions"
+                      size={SIZES.icon}
+                      color={COLORS.primary}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </ScrollView>
     );
   }
 
-  return (
-    <>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="transparent"
-        translucent={true}
-      />
-      <View style={{flex: 1}}>
-        {renderMap()}
-        {renderSearchBar()}
-        {renderMapFunction()}
-      </View>
-    </>
-  );
+  if (!loaded) {
+    return <View></View>;
+  } else {
+    return (
+      <>
+        <StatusBar
+          barStyle="dark-content"
+          backgroundColor="transparent"
+          translucent={true}
+        />
+        <View style={styles.container}>
+          {renderShowAttraction()}
+          {renderSearchBar()}
+        </View>
+      </>
+    );
+  }
 }
 
+const mapStateToProps = (store) => ({
+  savedAttraction: store.attractionState.savedAttraction,
+});
+
+export default connect(mapStateToProps, null)(index);
+
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  mapContainer: {
+    position: 'absolute',
+    elevation: 1,
+    top: 0,
+  },
+  map: {
+    width: SIZES.width,
+    height: SIZES.height,
+  },
   marker: {
     height: 20,
     width: 20,
@@ -153,11 +279,113 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLORS.primary,
   },
+  showScroll: {},
+  showContainer: {
+    elevation: 2,
+    width: SIZES.width,
+    marginTop: SIZES.height - 60,
+    paddingBottom: SIZES.paddingWide,
+    borderTopLeftRadius: SIZES.radius,
+    borderTopRightRadius: SIZES.radius,
+    backgroundColor: COLORS.lightgray,
+  },
+  showLabel: {
+    marginLeft: '5%',
+    marginBottom: SIZES.paddingNormal,
+    ...FONTS.h1,
+  },
+  attractionContainer: {
+    height: 150,
+    width: '90%',
+    paddingHorizontal: SIZES.paddingNormal,
+    marginBottom: SIZES.paddingWide,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 2.0,
+    elevation: 2,
+  },
+  attractionImageContainer: {
+    height: 120,
+    width: 120,
+    borderRadius: 10,
+    elevation: 2,
+  },
+  attractionImage: {
+    height: 120,
+    width: 120,
+    borderRadius: 10,
+  },
+  attractionDetails: {
+    flex: 1,
+    height: 120,
+    paddingVertical: SIZES.paddingWide,
+    marginLeft: SIZES.paddingWide,
+  },
+  attractionRateContainer: {
+    flexDirection: 'row',
+    marginTop: SIZES.paddingNormal,
+  },
+  attractionRating: {
+    flexDirection: 'row',
+    marginRight: SIZES.paddingNormal,
+  },
+  attractionDistance: {
+    flexDirection: 'row',
+  },
+  attractionTitle: {
+    ...FONTS.h3,
+  },
+  attractionSubtitle: {
+    ...FONTS.body2,
+  },
+  attractionLocation: {
+    ...FONTS.body2,
+  },
+  attractionButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  showScrollIndicator: {
+    width: '40%',
+    height: 5,
+    marginTop: SIZES.paddingWide * 1.5,
+    borderRadius: 5,
+    backgroundColor: COLORS.primary,
+    marginBottom: SIZES.paddingWide * 2.5,
+    alignSelf: 'center',
+  },
+  attractionButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: SIZES.paddingNormal,
+    backgroundColor: COLORS.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 2.0,
+    elevation: 1,
+  },
   searchBarContainer: {
     position: 'absolute',
-    top: SIZES.paddingWide * 1.5,
+    top: SIZES.paddingWide * 2,
     left: 0,
     right: 0,
+    elevation: 0,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -168,7 +396,7 @@ const styles = StyleSheet.create({
     marginHorizontal: SIZES.paddingNormal,
     paddingHorizontal: 20,
     borderRadius: SIZES.radius,
-    elevation: 2,
+    elevation: 1,
     backgroundColor: COLORS.white,
     ...FONTS.body2,
     textAlign: 'center',
@@ -177,7 +405,7 @@ const styles = StyleSheet.create({
     height: SIZES.icon * 1.5,
     width: SIZES.icon * 1.5,
     borderRadius: SIZES.icon,
-    elevation: 2,
+    elevation: 1,
     backgroundColor: COLORS.white,
     justifyContent: 'center',
     alignItems: 'center',
@@ -186,26 +414,9 @@ const styles = StyleSheet.create({
     width: SIZES.icon * 1.5,
     height: SIZES.icon * 1.5,
     borderRadius: SIZES.icon,
-    elevation: 2,
+    elevation: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: COLORS.white,
-  },
-  mapFunctionContainer: {
-    position: 'absolute',
-    right: 0,
-    left: 0,
-    bottom: SIZES.paddingWide,
-    alignItems: 'center',
-  },
-  bookmarkButton: {
-    width: SIZES.width * 0.5,
-    height: SIZES.icon * 1.5,
-    borderRadius: SIZES.icon,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 2,
-    backgroundColor: COLORS.primary,
   },
 });
