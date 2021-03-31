@@ -8,12 +8,16 @@ import {
   Animated,
   Image,
   ScrollView,
-  FlatList,
+  Linking,
 } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {COLORS, FONTS, IMAGE, SIZES} from '../../constants';
+
+import {fetchEvents} from '../../redux/actions';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {COLORS, FONTS, IMAGE, SERVER, SIZES} from '../../constants';
 
 const EVENT_DUMMY = [
   {
@@ -39,16 +43,21 @@ const EVENT_DUMMY = [
   },
 ];
 
-export default function index({navigation}) {
+export function index(props) {
+  const {navigation, events} = props;
   const bgScrollY = useRef(new Animated.Value(0)).current;
   const [buttonActive, setButtonActive] = useState('');
   const [eventList, setEventList] = useState(null);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setEventList(EVENT_DUMMY);
-    setLoaded(true);
+    props.fetchEvents();
   }, []);
+
+  useEffect(() => {
+    setEventList(events);
+    setLoaded(true);
+  }, [props]);
 
   const opacity = bgScrollY.interpolate({
     inputRange: [0, 30],
@@ -105,8 +114,8 @@ export default function index({navigation}) {
           style={styles.selectionButton}
           onPress={() => {
             setButtonActive('art');
-            const newEventList = EVENT_DUMMY.filter(
-              (item) => item.category == 'art',
+            const newEventList = events.filter((item) =>
+              item.category.includes('art'),
             );
             setEventList(newEventList);
           }}>
@@ -124,8 +133,8 @@ export default function index({navigation}) {
           style={styles.selectionButton}
           onPress={() => {
             setButtonActive('culinary');
-            const newEventList = EVENT_DUMMY.filter(
-              (item) => item.category == 'culinary',
+            const newEventList = events.filter((item) =>
+              item.category.includes('culinary'),
             );
             setEventList(newEventList);
           }}>
@@ -143,8 +152,8 @@ export default function index({navigation}) {
           style={styles.selectionButton}
           onPress={() => {
             setButtonActive('sports');
-            const newEventList = EVENT_DUMMY.filter(
-              (item) => item.category == 'sports',
+            const newEventList = events.filter((item) =>
+              item.category.includes('sports'),
             );
             setEventList(newEventList);
           }}>
@@ -162,8 +171,8 @@ export default function index({navigation}) {
           style={styles.selectionButton}
           onPress={() => {
             setButtonActive('traditional');
-            const newEventList = EVENT_DUMMY.filter(
-              (item) => item.category == 'traditional',
+            const newEventList = events.filter((item) =>
+              item.category.includes('traditional'),
             );
             setEventList(newEventList);
           }}>
@@ -201,13 +210,36 @@ export default function index({navigation}) {
         <View style={styles.bodyContainer}>
           <View style={styles.bodyScrollIndicator} />
           {eventList.map((item, index) => {
+            const linkHandler = () => {
+              Linking.canOpenURL(item.detailURL)
+                .then((supported) => {
+                  if (supported) {
+                    Linking.openURL(item.detailURL);
+                  } else {
+                    alert("Can't access url");
+                  }
+                })
+                .catch(() => {
+                  alert("Can't access url");
+                });
+            };
+
             return (
               <View key={index} style={styles.bodyEventContainer}>
-                <View style={styles.bodyEventImg}></View>
+                <Image
+                  source={{uri: `${SERVER}/${item.imageURL}`}}
+                  resizeMode="contain"
+                  style={styles.bodyEventImg}
+                />
                 <View>
-                  <Text style={styles.bodyEventTitle}>Event Title</Text>
-                  <Text style={styles.bodyEventDate}>Date, time</Text>
-                  <Text style={styles.bodyEventLocation}>Location</Text>
+                  <Text style={styles.bodyEventTitle}>{item.title}</Text>
+                  <Text style={styles.bodyEventDate}>{item.date}</Text>
+                  <Text style={styles.bodyEventLocation}>{item.location}</Text>
+                  <TouchableOpacity
+                    style={styles.bodyEventButtonContainer}
+                    onPress={() => linkHandler()}>
+                    <Text style={styles.bodyEventButtonLabel}>Go to page</Text>
+                  </TouchableOpacity>
                 </View>
               </View>
             );
@@ -226,7 +258,7 @@ export default function index({navigation}) {
     );
   }
 
-  if (!loaded) return <View></View>;
+  if (!loaded || !eventList) return <View></View>;
   else {
     return (
       <View style={styles.container}>
@@ -243,6 +275,15 @@ export default function index({navigation}) {
     );
   }
 }
+
+const mapStateToProps = (store) => ({
+  events: store.eventState.event,
+});
+
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({fetchEvents}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(index);
 
 const styles = StyleSheet.create({
   container: {
@@ -354,20 +395,35 @@ const styles = StyleSheet.create({
     width: 120,
     marginRight: SIZES.paddingWide,
     borderRadius: 10,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.lightgray,
   },
   bodyEventTitle: {
     ...FONTS.h2,
   },
   bodyEventDate: {
-    ...FONTS.body1,
+    ...FONTS.body2,
   },
   bodyEventLocation: {
-    ...FONTS.body1,
+    ...FONTS.body2,
+  },
+  bodyEventButtonContainer: {
+    width: '80%',
+    marginTop: SIZES.paddingNormal,
+    paddingVertical: 5,
+    borderRadius: 20,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bodyEventButtonLabel: {
+    ...FONTS.body2,
+    color: COLORS.white,
   },
   bodyBackButton: {
     position: 'absolute',
     top: 40,
     left: SIZES.paddingWide * 1.5,
+    height: SIZES.icon * 2,
+    width: SIZES.icon * 2,
   },
 });

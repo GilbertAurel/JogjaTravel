@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {SIZES, IMAGE, COLORS, FONTS} from '../../constants';
+import {SIZES, IMAGE, COLORS, FONTS, SERVER} from '../../constants';
 
 export default function index({route, navigation}) {
   const bgScrollY = useRef(new Animated.Value(0)).current;
@@ -24,7 +24,7 @@ export default function index({route, navigation}) {
     outputRange: [0, -30],
   });
   const topBarOpacity = bgScrollY.interpolate({
-    inputRange: [100, 300],
+    inputRange: [100, 200],
     outputRange: [0, 1],
   });
 
@@ -37,7 +37,7 @@ export default function index({route, navigation}) {
   function renderBackground() {
     return (
       <Animated.Image
-        source={IMAGE.borobudur}
+        source={{uri: `${SERVER}/${news.imageURL}`}}
         resizeMode="cover"
         style={{top: bgTranslateY, ...styles.background}}
       />
@@ -60,6 +60,7 @@ export default function index({route, navigation}) {
   }
 
   function renderBody() {
+    const replacement = {'\\n\\n': '\n\n', '\\t': '\t'};
     return (
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -77,26 +78,23 @@ export default function index({route, navigation}) {
         )}
         style={styles.container}>
         <View style={styles.bodyContainer}>
-          <View style={styles.bodyScrollIndicator} />
           {/* headline */}
+          <Image
+            source={IMAGE.bakpiaTugu}
+            resizeMode="cover"
+            style={styles.bodyProfileImg}
+          />
           <Text style={styles.bodyHeadline}>{news.headline}</Text>
-          <View style={styles.bodyLiner} />
 
-          {/* author */}
-          <View style={styles.bodyAuthorContainer}>
-            <Image
-              source={IMAGE.bakpiaTugu}
-              resizeMode="cover"
-              style={styles.bodyAuthorImg}
-            />
-            <View style={styles.bodyAuthorDetails}>
-              <Text style={styles.bodyAuthorName}>Author Name</Text>
-              <Text style={styles.bodyAuthorDate}>Date, Time</Text>
-            </View>
-          </View>
+          <Text style={styles.bodyDate}>{news.date}</Text>
 
           {/* content */}
-          <Text style={styles.bodyContent}>{news.body}</Text>
+          <Text style={styles.bodyContent}>
+            {news.body.replace(
+              /\\n\\n|\\t/g,
+              (character) => replacement[character],
+            )}
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.bodyBackButton}
@@ -137,6 +135,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     height: SIZES.height * 0.5,
+    width: SIZES.width,
   },
   topBar: {
     position: 'absolute',
@@ -168,48 +167,28 @@ const styles = StyleSheet.create({
     width: SIZES.width,
     minHeight: SIZES.height - 400,
     marginTop: 400,
-    paddingTop: SIZES.paddingWide * 1.5,
+    paddingTop: SIZES.paddingWide * 4,
     paddingBottom: SIZES.paddingWide * 4,
     paddingHorizontal: SIZES.paddingWide * 1.5,
     backgroundColor: COLORS.white,
-    borderTopLeftRadius: SIZES.radius,
-    borderTopRightRadius: SIZES.radius,
-  },
-  bodyScrollIndicator: {
-    width: '40%',
-    height: 5,
-    borderRadius: 5,
-    backgroundColor: COLORS.primary,
-    marginBottom: SIZES.paddingWide * 2.5,
-    alignSelf: 'center',
+    alignItems: 'center',
   },
   bodyHeadline: {
-    width: '80%',
+    width: '70%',
+    textAlign: 'center',
     ...FONTS.h1,
   },
-  bodyLiner: {
-    width: '100%',
-    marginVertical: SIZES.paddingWide,
-    borderTopWidth: 1,
-    borderColor: COLORS.primary,
-  },
-  bodyAuthorContainer: {
-    flexDirection: 'row',
-    marginBottom: SIZES.paddingWide * 2,
-  },
-  bodyAuthorImg: {
-    height: 50,
-    width: 50,
-    borderRadius: 25,
+  bodyProfileImg: {
+    position: 'absolute',
+    top: -50,
+    height: 100,
+    width: 100,
+    borderRadius: 50,
     backgroundColor: COLORS.primary,
   },
-  bodyAuthorDetails: {
-    marginLeft: SIZES.paddingNormal,
-  },
-  bodyAuthorName: {
-    ...FONTS.body2,
-  },
-  bodyAuthorDate: {
+  bodyDate: {
+    marginTop: SIZES.paddingNormal,
+    marginBottom: SIZES.paddingWide * 2,
     ...FONTS.body2,
   },
   bodyContent: {
@@ -221,5 +200,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 40,
     left: SIZES.paddingWide * 1.5,
+    height: SIZES.icon * 2,
+    width: SIZES.icon * 2,
   },
 });

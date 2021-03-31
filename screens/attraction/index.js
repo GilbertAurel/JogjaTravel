@@ -4,7 +4,7 @@ import {StatusBar, ScrollView, TouchableOpacity, Text} from 'react-native';
 import LandingPage from './landingPage';
 import DetailPage from './detailPage';
 
-export default function index({route}) {
+export default function index({route, navigation}) {
   const {item} = route.params;
   const scrollRef = useRef();
 
@@ -21,7 +21,11 @@ export default function index({route}) {
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         ref={scrollRef}>
-        <LandingPage item={item} scrollRef={scrollRef} />
+        <LandingPage
+          item={item}
+          scrollRef={scrollRef}
+          navigation={navigation}
+        />
         <DetailPage item={item} />
       </ScrollView>
     </>

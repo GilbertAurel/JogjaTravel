@@ -16,8 +16,9 @@ import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import GetLocation from 'react-native-get-location';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import {COLORS, FONTS, IMAGE, SIZES} from '../../constants';
+import {COLORS, FONTS, IMAGE, SERVER, SIZES} from '../../constants';
 import {connect} from 'react-redux';
+import {getDistance} from 'geolib';
 
 const initialLocation = {
   latitude: -7.782520944656917,
@@ -27,18 +28,12 @@ const initialLocation = {
 };
 
 export function index(props) {
-  const {navigation} = props;
+  const {navigation, savedAttraction} = props;
   const mapRef = useRef();
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const [myLocation, setMyLocation] = useState(initialLocation);
   const [attraction, setAttraction] = useState(null);
-  const [loaded, setLoaded] = useState(false);
-
-  const mapHeight = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [SIZES.height, SIZES.height - 100],
-  });
 
   useEffect(() => {
     GetLocation.getCurrentPosition({
@@ -59,20 +54,11 @@ export function index(props) {
       .catch((error) => {
         console.log(error);
       });
-
-    // const {savedAttraction} = props;
-    const dummy = [
-      {
-        title: 'test',
-      },
-      {
-        title: 'test',
-      },
-    ];
-
-    setAttraction(dummy);
-    setLoaded(true);
   }, []);
+
+  useEffect(() => {
+    setAttraction(savedAttraction);
+  }, [props]);
 
   function renderMap() {
     const currentLocationMarker = () => {
@@ -157,18 +143,30 @@ export function index(props) {
         {renderMap()}
         <View style={styles.showContainer}>
           <View style={styles.showScrollIndicator} />
-          {attraction.length > 1 ? (
+
+          {/* title */}
+          {attraction.length >= 1 ? (
             <Text style={styles.showLabel}>Saved Attractions</Text>
           ) : (
             <Text style={styles.showLabel}>No Saved Attractions</Text>
           )}
+
+          {/* item list */}
           {attraction.map((item, index) => {
+            const distance = () => {
+              const kilometer =
+                getDistance(myLocation, item.coordinate) * 0.001;
+
+              if (kilometer > 50) return '50km+';
+              else return `${Math.floor(kilometer)}km`;
+            };
+
             return (
               <View key={index} style={styles.attractionContainer}>
                 {/* Image */}
                 <TouchableOpacity style={styles.attractionImageContainer}>
                   <Image
-                    source={IMAGE.bakpiaTugu}
+                    source={{uri: `${SERVER}/${item.imageURL}`}}
                     resizeMode="cover"
                     style={styles.attractionImage}
                   />
@@ -176,10 +174,8 @@ export function index(props) {
 
                 {/* Details */}
                 <View style={styles.attractionDetails}>
-                  <Text style={styles.attractionTitle}>Attraction Title</Text>
-                  <Text style={styles.attractionLocation}>
-                    Street, Location
-                  </Text>
+                  <Text style={styles.attractionTitle}>{item.title}</Text>
+                  <Text style={styles.attractionLocation}>{item.address}</Text>
                   <View style={styles.attractionRateContainer}>
                     <View style={styles.attractionRating}>
                       <MaterialIcons
@@ -187,7 +183,9 @@ export function index(props) {
                         size={SIZES.icon * 0.7}
                         color={COLORS.yellow}
                       />
-                      <Text style={styles.attractionSubtitle}>5.0</Text>
+                      <Text style={styles.attractionSubtitle}>
+                        {item.rating}
+                      </Text>
                     </View>
                     <View style={styles.attractionDistance}>
                       <MaterialIcons
@@ -195,7 +193,9 @@ export function index(props) {
                         size={SIZES.icon * 0.7}
                         color={COLORS.primary}
                       />
-                      <Text style={styles.attractionSubtitle}>100km</Text>
+                      <Text style={styles.attractionSubtitle}>
+                        {distance()}
+                      </Text>
                     </View>
                   </View>
                 </View>
@@ -225,7 +225,7 @@ export function index(props) {
     );
   }
 
-  if (!loaded) {
+  if (!attraction) {
     return <View></View>;
   } else {
     return (

@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -10,23 +10,43 @@ import {
 } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   COLORS,
   FONTS,
   SIZES,
-  NEWS,
   CATEGORIES,
-  POPULAR,
   MENU,
+  SERVER,
 } from '../../../constants';
 
-export default function body({navigation}) {
+export default function body(props) {
   const scrollX = new Animated.Value(0);
   const flatListRef = useRef();
+  const {navigation} = props;
+
   const [category, setCategory] = useState([{title: 'all'}, ...CATEGORIES]);
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [popularList, setPopularList] = useState(POPULAR);
+  const [popularList, setPopularList] = useState(null);
+  const [showSelected, setShowSelected] = useState(null);
+  const [newsList, setNewsList] = useState(null);
+
+  useEffect(() => {
+    const {popularAttractions, attractions, news} = props;
+
+    if (popularAttractions && attractions) {
+      const newPopular = attractions.filter((item) =>
+        popularAttractions.some(
+          (popularItem) => popularItem.attraction == item.id,
+        ),
+      );
+
+      setPopularList(newPopular);
+      setShowSelected(newPopular);
+      setNewsList(news);
+    }
+  }, [props]);
 
   // QUICK MENU
   function renderQuickMenu() {
@@ -72,102 +92,120 @@ export default function body({navigation}) {
 
   // NEWS & UPDATE
   function renderNewsContent() {
-    return (
-      <View>
-        <Text style={styles.newsTitle}>News & Updates</Text>
-        <Animated.ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled
-          scrollEventThrottle={16}
-          snapToAlignment="center"
-          style={styles.newsAnimatedScrollView}
-          onScroll={Animated.event(
-            [{nativeEvent: {contentOffset: {x: scrollX}}}],
-            {useNativeDriver: false},
-          )}>
-          {NEWS.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.newsCarousel}
-              activeOpacity={0.8}
-              onPress={() => navigation.navigate('news', {news: item})}>
-              <Image
-                source={item.cover}
-                resizeMode="cover"
-                style={styles.newsImage}
-              />
-              <LinearGradient
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 2}}
-                colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.5)']}
-                style={{...styles.newsImage, ...styles.newsDarkenBackground}}
-              />
-              <Text style={styles.newsHeadline}>{item.headline}</Text>
-              <View style={styles.newsLocationLabelContainer}>
-                <MaterialIcons
-                  name="location-on"
-                  color={COLORS.white}
-                  size={SIZES.icon * 0.5}
-                />
-                <Text style={styles.newsLocationLabelText}>
-                  {item.location}
-                </Text>
+    if (!newsList) {
+      return (
+        <View style={{marginBottom: 30}}>
+          <Text style={styles.newsTitle}>News & Updates</Text>
+          <SkeletonPlaceholder>
+            <View style={styles.newsAnimatedScrollView}>
+              <View style={styles.newsCarousel}>
+                <View style={styles.newsImage}></View>
               </View>
-            </TouchableOpacity>
-          ))}
-        </Animated.ScrollView>
-      </View>
-    );
+            </View>
+          </SkeletonPlaceholder>
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <Text style={styles.newsTitle}>News & Updates</Text>
+          <Animated.ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled
+            scrollEventThrottle={16}
+            snapToAlignment="center"
+            style={styles.newsAnimatedScrollView}
+            onScroll={Animated.event(
+              [{nativeEvent: {contentOffset: {x: scrollX}}}],
+              {useNativeDriver: false},
+            )}>
+            {newsList.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.newsCarousel}
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate('news', {news: item})}>
+                <Image
+                  source={{uri: `${SERVER}/${item.imageURL}`}}
+                  resizeMode="cover"
+                  style={styles.newsImage}
+                />
+                <LinearGradient
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 2}}
+                  colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.5)']}
+                  style={{...styles.newsImage, ...styles.newsDarkenBackground}}
+                />
+                <Text style={styles.newsHeadline}>{item.headline}</Text>
+                <View style={styles.newsLocationLabelContainer}>
+                  <MaterialIcons
+                    name="location-on"
+                    color={COLORS.white}
+                    size={SIZES.icon * 0.5}
+                  />
+                  <Text style={styles.newsLocationLabelText}>
+                    {item.location}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </Animated.ScrollView>
+        </View>
+      );
+    }
   }
 
   function renderDots() {
     const dotPosition = Animated.divide(scrollX, SIZES.width);
 
-    return (
-      <View style={{height: 30}}>
-        <View style={styles.dotsContainer}>
-          {NEWS.map((item, index) => {
-            const dotOpacity = dotPosition.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [0.3, 1, 0.3],
-              extrapolate: 'clamp',
-            });
+    if (!newsList) return <View></View>;
+    else {
+      return (
+        <View style={{height: 30}}>
+          <View style={styles.dotsContainer}>
+            {newsList.map((item, index) => {
+              const dotOpacity = dotPosition.interpolate({
+                inputRange: [index - 1, index, index + 1],
+                outputRange: [0.3, 1, 0.3],
+                extrapolate: 'clamp',
+              });
 
-            const dotSizeHeight = dotPosition.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [5, 6, 5],
-              extrapolate: 'clamp',
-            });
+              const dotSizeHeight = dotPosition.interpolate({
+                inputRange: [index - 1, index, index + 1],
+                outputRange: [5, 6, 5],
+                extrapolate: 'clamp',
+              });
 
-            const dotSizeWidth = dotPosition.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [5, 15, 5],
-              extrapolate: 'clamp',
-            });
+              const dotSizeWidth = dotPosition.interpolate({
+                inputRange: [index - 1, index, index + 1],
+                outputRange: [5, 15, 5],
+                extrapolate: 'clamp',
+              });
 
-            const dotColor = dotPosition.interpolate({
-              inputRange: [index - 1, index, index + 1],
-              outputRange: [COLORS.primary, COLORS.primary, COLORS.primary],
-              extrapolate: 'clamp',
-            });
+              const dotColor = dotPosition.interpolate({
+                inputRange: [index - 1, index, index + 1],
+                outputRange: [COLORS.primary, COLORS.primary, COLORS.primary],
+                extrapolate: 'clamp',
+              });
 
-            return (
-              <Animated.View
-                key={index}
-                opacity={dotOpacity}
-                style={{
-                  ...styles.dotsAnimatedView,
-                  width: dotSizeWidth,
-                  height: dotSizeHeight,
-                  backgroundColor: dotColor,
-                }}
-              />
-            );
-          })}
+              return (
+                <Animated.View
+                  key={index}
+                  opacity={dotOpacity}
+                  style={{
+                    ...styles.dotsAnimatedView,
+                    width: dotSizeWidth,
+                    height: dotSizeHeight,
+                    backgroundColor: dotColor,
+                  }}
+                />
+              );
+            })}
+          </View>
         </View>
-      </View>
-    );
+      );
+    }
   }
 
   function renderNews() {
@@ -182,14 +220,15 @@ export default function body({navigation}) {
   // POPULAR DESTINATION
   function renderPopularCategory() {
     const onClickCategory = (item) => {
-      const newPopularList = POPULAR.filter((a) =>
-        a.category.includes(item.title),
+      const newPopularList = popularList.filter((doc) =>
+        doc.category.includes(item.title),
       );
 
-      if (item.title == 'all') setPopularList(POPULAR);
-      else setPopularList(newPopularList);
+      if (item.title == 'all') setShowSelected(popularList);
+      else setShowSelected(newPopularList);
 
-      flatListRef.current.scrollToIndex({index: 0, animated: false});
+      if (!newPopularList)
+        flatListRef.current.scrollToIndex({index: 0, animated: false});
       setSelectedCategory(item.title);
     };
 
@@ -242,7 +281,7 @@ export default function body({navigation}) {
           }
           activeOpacity={0.8}>
           <Image
-            source={item.image}
+            source={{uri: `${SERVER}/${item.imageURL}`}}
             resizeMode="cover"
             style={styles.popularList}
           />
@@ -263,16 +302,49 @@ export default function body({navigation}) {
         </TouchableOpacity>
       );
     };
-    return (
-      <FlatList
-        horizontal
-        ref={flatListRef}
-        showsHorizontalScrollIndicator={false}
-        data={popularList}
-        renderItem={renderItem}
-        keyExtractor={(item) => `${item.id}`}
-      />
-    );
+
+    if (showSelected) {
+      return (
+        <View style={styles.popularListViewContainer}>
+          <FlatList
+            horizontal
+            ref={flatListRef}
+            showsHorizontalScrollIndicator={false}
+            data={showSelected}
+            renderItem={renderItem}
+            keyExtractor={(item) => `${item.id}`}
+          />
+        </View>
+      );
+    } else {
+      return (
+        <SkeletonPlaceholder>
+          <View style={{flexDirection: 'row'}}>
+            <View
+              style={{
+                width: 150,
+                height: 200,
+                marginRight: 10,
+                borderRadius: 10,
+              }}></View>
+            <View
+              style={{
+                width: 150,
+                height: 200,
+                marginRight: 10,
+                borderRadius: 10,
+              }}></View>
+            <View
+              style={{
+                width: 150,
+                height: 200,
+                marginRight: 10,
+                borderRadius: 10,
+              }}></View>
+          </View>
+        </SkeletonPlaceholder>
+      );
+    }
   }
 
   return (
@@ -392,6 +464,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.01,
     shadowRadius: 2.0,
     elevation: 1,
+  },
+  popularListViewContainer: {
+    minHeight: 240,
   },
   popularListContainer: {
     width: 150,

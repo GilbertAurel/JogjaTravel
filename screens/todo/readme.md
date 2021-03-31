@@ -4,9 +4,7 @@ done:
 -discovery
 
 todo:
--attraction page
--event
--tour guide
--transport
--maps
--help
+
+- delete function
+- map directions
+- user

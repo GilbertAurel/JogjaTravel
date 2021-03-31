@@ -5,7 +5,12 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import GetLocation from 'react-native-get-location';
 import {connect} from 'react-redux';
-import {fetchCurrentLocation} from '../../redux/actions';
+import {
+  fetchCurrentLocation,
+  fetchDiscovery,
+  fetchPopularAtractions,
+  fetchNews,
+} from '../../redux/actions';
 
 import home from './home';
 import discovery from './discovery';
@@ -33,6 +38,9 @@ export function tabs(props) {
           longitude,
         };
         props.fetchCurrentLocation(currentLocation);
+        props.fetchDiscovery();
+        props.fetchPopularAtractions();
+        props.fetchNews();
       })
       .catch((error) => {
         console.log(error);
@@ -110,7 +118,10 @@ export function tabs(props) {
 }
 
 const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({fetchCurrentLocation}, dispatch);
+  bindActionCreators(
+    {fetchCurrentLocation, fetchDiscovery, fetchPopularAtractions, fetchNews},
+    dispatch,
+  );
 
 export default connect(null, mapDispatchToProps)(tabs);
 

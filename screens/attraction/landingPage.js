@@ -4,7 +4,7 @@ import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {COLORS, FONTS, SIZES, SERVER} from '../../constants';
 
-export default function landing({item, scrollRef}) {
+export default function landing({item, scrollRef, navigation}) {
   const priceRating = () => {
     if (item.price == 'affordable') return 1;
     else if (item.price == 'fair') return 2;
@@ -91,6 +91,16 @@ export default function landing({item, scrollRef}) {
           />
         </TouchableOpacity>
       </View>
+
+      <TouchableOpacity
+        style={styles.bodyBackButton}
+        onPress={() => navigation.goBack()}>
+        <MaterialIcons
+          name="arrow-back"
+          size={SIZES.icon}
+          color={COLORS.white}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -115,5 +125,12 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: SIZES.height * 0.02,
     alignItems: 'center',
+  },
+  bodyBackButton: {
+    position: 'absolute',
+    top: 40,
+    left: SIZES.paddingWide * 1.5,
+    height: SIZES.icon * 2,
+    width: SIZES.icon * 2,
   },
 });

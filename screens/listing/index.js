@@ -29,23 +29,9 @@ export function index(props) {
   useEffect(() => {
     const {discovery, currentLocation} = props;
 
-    if (!discovery) {
-      const url = `${SERVER}/attractions/attraction.json`;
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((json) => {
-          setAttractions(json);
-          setLoading(false);
-          props.fetchDiscovery(json);
-        })
-        .catch((error) => console.log(error));
-    } else {
-      setAttractions(discovery);
-      setLoading(false);
-    }
-
+    setAttractions(discovery);
     setCurrentLocation(currentLocation);
+    setLoading(false);
   }, [props]);
 
   function renderSearch() {

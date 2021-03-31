@@ -5,68 +5,38 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  StatusBar,
+  Image,
 } from 'react-native';
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {COLORS, FONTS, SERVER, SIZES} from '../../../constants';
-import {saveAttraction} from '../../../redux/actions';
-import {attraction} from '../../../redux/reducers/attraction';
-import {fetchDiscovery} from '../../../redux/actions';
 import {FlatList} from 'react-native-gesture-handler';
 
 export function index(props) {
-  const [attractions, setAttractions] = useState([]);
+  const {savedAttraction} = props;
+  const [attractions, setAttractions] = useState(null);
 
   useEffect(() => {
-    const {savedAttraction} = props;
-    if (!savedAttraction) {
-      const url = `${SERVER}/attractions/attraction.json`;
-
-      fetch(url)
-        .then((response) => response.json())
-        .then((json) => {
-          setAttractions(json);
-          props.fetchDiscovery(json);
-        })
-        .catch((error) => console.log(error));
-    } else {
-      setAttractions(savedAttraction);
-    }
-  }, [props.savedAttraction]);
+    setAttractions(savedAttraction);
+  }, [props]);
 
   function renderSearch() {
     return (
       <View style={styles.searchContainer}>
-        <MaterialIcons
-          name="search"
-          color={COLORS.primary}
-          size={SIZES.icon * 0.8}
-          style={{
-            position: 'absolute',
-            elevation: 1,
-            left: SIZES.paddingNormal * 3,
-            bottom: 25,
-          }}
-        />
         <TextInput
           style={styles.searchBar}
-          placeholder="where are you going?"
+          placeholder="search saved attraction"
+          onChangeText={(text) => {
+            setSearchAttractions(() => {
+              return attractions.filter((doc) =>
+                doc.title.toLowerCase().includes(text.toLowerCase()),
+              );
+            });
+          }}
         />
-        <View
-          style={{
-            position: 'absolute',
-            elevation: 1,
-            right: SIZES.paddingNormal * 3,
-            bottom: 25,
-          }}>
-          <MaterialIcons
-            name="tune"
-            color={COLORS.primary}
-            size={SIZES.icon * 0.8}
-          />
-        </View>
       </View>
     );
   }
@@ -94,50 +64,73 @@ export function index(props) {
   function renderSavedAttractions() {
     const renderItem = ({item}) => {
       return (
-        <View>
-          <Text>{item.title}</Text>
+        <View style={styles.itemContainer}>
+          <Image
+            source={{uri: `${SERVER}/${item.imageURL}`}}
+            resizeMode="cover"
+            style={styles.itemImage}
+          />
+          <View style={styles.itemDetailsContainer}>
+            <Text style={styles.itemTitle}>{item.title}</Text>
+            <Text style={styles.itemLocation}>{item.address}</Text>
+            <View style={styles.itemRatingContainer}>
+              <MaterialIcons
+                name="star"
+                size={SIZES.icon * 0.8}
+                color={COLORS.yellow}
+              />
+              <Text style={styles.itemRating}>{item.rating}</Text>
+            </View>
+          </View>
+          <TouchableOpacity>
+            <MaterialIcons
+              name="clear"
+              size={SIZES.icon}
+              color={COLORS.primary}
+            />
+          </TouchableOpacity>
         </View>
       );
     };
 
     return (
-      <View
-        style={{
-          flex: 1,
-        }}>
-        <FlatList
-          data={attractions}
-          keyExtractor={(item, index) => `${index}`}
-          renderItem={renderItem}
-        />
-      </View>
+      <FlatList
+        data={attractions}
+        keyExtractor={(item, index) => `${index}`}
+        renderItem={renderItem}
+        style={styles.listContainer}
+        ListFooterComponent={() => {
+          return <View style={{height: 20}} />;
+        }}
+      />
     );
   }
 
-  return (
-    <View style={styles.container}>
-      <View
-        style={{
-          width: SIZES.width,
-          height: SIZES.paddingWide,
-          backgroundColor: COLORS.primary,
-        }}
-      />
-      {renderSearch()}
-      {attractions.length == 0 ? renderNoData() : renderSavedAttractions()}
-    </View>
-  );
+  if (!attractions) return <View></View>;
+  else {
+    return (
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" />
+        <View
+          style={{
+            width: SIZES.width,
+            height: SIZES.paddingWide,
+            backgroundColor: COLORS.white,
+          }}
+        />
+        {renderSearch()}
+        {attractions.length == 0 ? renderNoData() : renderSavedAttractions()}
+        <View style={styles.navigationBackground} />
+      </View>
+    );
+  }
 }
 
 const mapStateToProps = (store) => ({
   savedAttraction: store.discoveryState.item,
 });
 
-// DELETE THIS
-const mapDispatchToProps = (dispatch) =>
-  bindActionCreators({fetchDiscovery}, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(index);
+export default connect(mapStateToProps, null)(index);
 
 const styles = StyleSheet.create({
   container: {
@@ -147,19 +140,82 @@ const styles = StyleSheet.create({
   searchContainer: {
     height: SIZES.height * 0.1,
     width: SIZES.width,
-    backgroundColor: COLORS.primary,
+    paddingTop: 40,
+    paddingBottom: 20,
+    paddingHorizontal: SIZES.paddingWide,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.white,
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.01,
+    shadowRadius: 2.0,
+    elevation: 1,
   },
   searchBar: {
+    flex: 1,
     height: 30,
-    width: SIZES.width * 0.9,
-    marginBottom: 20,
     borderRadius: SIZES.radius,
     paddingVertical: 0,
     paddingHorizontal: SIZES.paddingNormal,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.lightgray,
     ...FONTS.body2,
     textAlign: 'center',
+  },
+  listContainer: {
+    width: SIZES.width,
+  },
+  itemContainer: {
+    width: SIZES.width * 0.9,
+    height: 120,
+    marginTop: SIZES.paddingWide,
+    paddingHorizontal: SIZES.paddingWide,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: COLORS.white,
+    shadowColor: COLORS.black,
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.9,
+    shadowRadius: 2.0,
+    elevation: 2,
+  },
+  itemImage: {
+    height: '80%',
+    width: 100,
+    marginRight: SIZES.paddingNormal,
+    borderRadius: 10,
+  },
+  itemDetailsContainer: {
+    flex: 1,
+  },
+  itemTitle: {
+    ...FONTS.h2,
+  },
+  itemLocation: {
+    ...FONTS.body1,
+  },
+  itemRatingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  itemRating: {
+    ...FONTS.body2,
+  },
+  navigationBackground: {
+    position: 'absolute',
+    height: 60,
+    width: SIZES.width,
+    bottom: 0,
+    elevation: 1,
+    backgroundColor: COLORS.white,
   },
 });
