@@ -2,13 +2,35 @@ import {
   ADD_SAVED_ATTRACTION,
   DELETE_SAVED_ATTRACTION,
   FETCH_CURRENT_LOCATION,
+  FETCH_SAVEDATTRACTION,
   FETCH_DISCOVERY,
   FETCH_POPULAR_ATTRACTIONS,
   FETCH_NEWS,
   FETCH_EVENTS,
+  USER_LOGOUT,
 } from '../constant';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 import {SERVER} from '../../constants';
+
+export function fetchSavedAttraction() {
+  return (dispatch) => {
+    firestore()
+      .collection('attraction')
+      .doc(auth().currentUser.uid)
+      .collection('saved')
+      .get()
+      .then((snapshot) => {
+        let attraction = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const id = doc.id;
+          return {id, ...data};
+        });
+        dispatch({type: FETCH_SAVEDATTRACTION, savedAttraction: attraction});
+      });
+  };
+}
 
 export function saveAttraction(attraction) {
   return (dispatch) => {
@@ -18,7 +40,7 @@ export function saveAttraction(attraction) {
 
 export function deleteAttraction(attraction) {
   return (dispatch) => {
-    dispatch({type: DELETE_SAVED_ATTRACTION, saveAttraction: attraction});
+    dispatch({type: DELETE_SAVED_ATTRACTION, savedAttraction: attraction});
   };
 }
 
@@ -83,5 +105,11 @@ export function fetchEvents() {
         return dispatch({type: FETCH_EVENTS, event: json});
       })
       .catch((error) => console.log(error));
+  };
+}
+
+export function logout() {
+  return (dispatch) => {
+    dispatch({type: USER_LOGOUT});
   };
 }

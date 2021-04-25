@@ -30,7 +30,6 @@ export default function index() {
   ]);
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [informationButton, setInformationButton] = useState(true);
-  const [galeryButton, setGaleryButton] = useState(false);
 
   function renderHeader() {
     return (
@@ -44,7 +43,6 @@ export default function index() {
             onPress={() => {
               if (!informationButton) {
                 setInformationButton(true);
-                setGaleryButton(false);
               }
             }}>
             <Text style={styles.headerButtonLabel}>Information</Text>
@@ -52,11 +50,12 @@ export default function index() {
           <TouchableOpacity
             style={{
               ...styles.headerButton,
-              backgroundColor: galeryButton ? COLORS.white : 'transparent',
+              backgroundColor: !informationButton
+                ? COLORS.white
+                : 'transparent',
             }}
             onPress={() => {
-              if (!galeryButton) {
-                setGaleryButton(true);
+              if (informationButton) {
                 setInformationButton(false);
                 galeriesScrollX.setValue(0);
               }
@@ -181,9 +180,9 @@ export default function index() {
                         borderRadius: 20,
                       }}
                     />
-                    <Text style={styles.bodyImageLabel}>Main title</Text>
+                    <Text style={styles.bodyImageLabel}>{item.name}</Text>
                     <Text style={styles.bodyImageLocation}>
-                      street, location
+                      {item.location}
                     </Text>
                   </Animated.View>
                 );
@@ -328,7 +327,9 @@ export default function index() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    backgroundColor: COLORS.primary,
+    height: SIZES.height,
+    width: SIZES.width,
   },
   headerContainer: {
     width: SIZES.width,
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerButton: {
-    width: SIZES.width * 0.35,
+    width: SIZES.width * 0.344,
     height: 25,
     borderRadius: 30,
     alignItems: 'center',
@@ -357,6 +358,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   bgContainer: {
+    height: SIZES.height,
     position: 'absolute',
     backgroundColor: COLORS.black,
     elevation: -1,
@@ -387,14 +389,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 50,
     bottom: 60,
-    ...FONTS.h1,
+    ...FONTS.h2,
     color: COLORS.white,
   },
   bodyImageLocation: {
     position: 'absolute',
     right: 50,
     bottom: 40,
-    ...FONTS.h2,
+    ...FONTS.h3,
     color: COLORS.white,
   },
   bodyTextContainer: {

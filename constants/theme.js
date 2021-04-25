@@ -3,7 +3,8 @@ import {Dimensions, StatusBar} from 'react-native';
 const {width, height} = Dimensions.get('window');
 
 export const GOOGLE_API_KEY = 'AIzaSyCQcVjKLEZh4tYHNxxYgB6cL9iWdJKcT6o';
-export const SERVER = 'http://10.0.2.2:3000';
+// export const SERVER = 'http://10.0.2.2:3000';
+export const SERVER = 'https://jogja-app.herokuapp.com';
 
 export const SIZES = {
   width: width,
@@ -35,6 +36,11 @@ export const COLORS = {
   white: '#fff',
   black: '#000',
   yellow: '#FFD700',
+  red: '#de5246',
+  green: '#a4c639',
+
+  linkedin: '#0072b1',
+  instagram: '#cd486b',
 };
 
 export const FONTS = {

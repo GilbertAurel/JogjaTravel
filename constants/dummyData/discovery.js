@@ -3,9 +3,9 @@ export const categoriesData = [
     id: 1,
     name: 'Keraton',
     icon: require('../../assets/icons/categories/bank.png'),
-    title: 'Authenthically Unique',
+    title: 'Palace of Yogyakarta',
     description:
-      'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quis optio facilis laudantium, fugit consequatur mollitia, impedit sit dolorum culpa sint in tenetur eaque omnis, nesciunt repudiandae veritatis doloribus beatae porro.',
+      'The Kraton Ngayogyakarta Hadiningrat is a palace complex in the city of Yogyakarta, Yogyakarta Special Region, Indonesia. It is the seat of the reigning Sultan of Yogyakarta and his family.',
     background: require('../../assets/images/discovery/keraton/background.png'),
     galeries: [
       {
@@ -32,27 +32,27 @@ export const categoriesData = [
     id: 2,
     name: 'Art',
     icon: require('../../assets/icons/categories/palette.png'),
-    title: 'Diversity',
+    title: 'City of culture',
     description:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam natus aperiam doloribus ratione non, repellat iusto minus nam harum? Reiciendis?',
+      'Artists from all over Indonesia and beyond have for years flocked to Jogja to plug into and contribute to the vibrant artistic community, making it a city that pulsates with creative energy wherever you look.',
     background: require('../../assets/images/discovery/art/background.png'),
     galeries: [
       {
         id: 1,
-        name: 'Wayangan',
-        image: require('../../assets/images/discovery/keraton/wayang.png'),
+        name: 'Jogja National Museum',
+        image: require('../../assets/images/discovery/art/jnm.png'),
         location: 'street, location',
       },
       {
         id: 2,
-        name: 'Gamelan',
-        image: require('../../assets/images/discovery/keraton/gamelan.png'),
+        name: 'Batik',
+        image: require('../../assets/images/discovery/art/batik.png'),
         location: 'street, location',
       },
       {
         id: 3,
-        name: 'Keraton',
-        image: require('../../assets/images/discovery/keraton/keraton.png'),
+        name: 'Clay pot',
+        image: require('../../assets/images/discovery/art/gerabah.png'),
         location: 'street, location',
       },
     ],
@@ -61,9 +61,9 @@ export const categoriesData = [
     id: 3,
     name: 'Nature',
     icon: require('../../assets/icons/categories/landscape.png'),
-    title: 'Completeness',
+    title: 'Myriad of landscapes',
     description:
-      'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Vel ex sequi provident dolorum ut dicta ipsa reiciendis ullam possimus laborum.',
+      'Yogyakarta has various types of landscapes. Visitors can explore both natural attractions and downtown freely during the visit.',
     background: require('../../assets/images/discovery/nature/background.png'),
     galeries: [
       {
@@ -90,9 +90,9 @@ export const categoriesData = [
     id: 4,
     name: 'Culinary',
     icon: require('../../assets/icons/categories/restaurant.png'),
-    title: 'Sweet',
+    title: 'Unique and sweet',
     description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim optio exercitationem illum repudiandae autem, ex voluptatem est in libero accusamus veritatis hic non perspiciatis aut odit? Necessitatibus optio id culpa.',
+      'Yogyakarta dishes are known for their sweetness. This city offers many luscious delicacies. From bakpia cookies, wingko babat, to many other unique dishes.',
     background: require('../../assets/images/discovery/culinary/background.png'),
     galeries: [
       {
@@ -119,27 +119,27 @@ export const categoriesData = [
     id: 5,
     name: 'Shopping',
     icon: require('../../assets/icons/categories/cart.png'),
-    title: 'Convenience',
+    title: 'Modern and traditional',
     description:
-      'Lorem ipsum dolor sit amet consectetur, adipisicing elit. A incidunt tempore quidem cupiditate provident atque, nostrum dolore aspernatur consectetur deleniti iusto perspiciatis aut autem expedita.',
+      'Yogyakarta has various different modern and traditional items. It spread through traditional market to modern mall.',
     background: require('../../assets/images/discovery/shopping/background.png'),
     galeries: [
       {
         id: 1,
-        name: 'Wayangan',
-        image: require('../../assets/images/discovery/keraton/wayang.png'),
+        name: 'Malioboro street',
+        image: require('../../assets/images/discovery/shopping/malioboro.png'),
         location: 'street, location',
       },
       {
         id: 2,
-        name: 'Gamelan',
-        image: require('../../assets/images/discovery/keraton/gamelan.png'),
+        name: 'Kasongan clay market',
+        image: require('../../assets/images/discovery/shopping/kasongan.png'),
         location: 'street, location',
       },
       {
         id: 3,
-        name: 'Keraton',
-        image: require('../../assets/images/discovery/keraton/keraton.png'),
+        name: 'Bringharjo traditional market',
+        image: require('../../assets/images/discovery/shopping/bringharjo.png'),
         location: 'street, location',
       },
     ],

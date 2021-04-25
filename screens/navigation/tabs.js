@@ -10,19 +10,18 @@ import {
   fetchDiscovery,
   fetchPopularAtractions,
   fetchNews,
+  fetchSavedAttraction,
 } from '../../redux/actions';
 
 import home from './home';
 import discovery from './discovery';
 import bookmark from './bookmark';
+import profile from './profile';
 import {SIZES, COLORS} from '../../constants';
 import {bindActionCreators} from 'redux';
+import auth from '@react-native-firebase/auth';
 
 const Tabs = createBottomTabNavigator();
-
-const emptyScreen = () => {
-  return null;
-};
 
 export function tabs(props) {
   useEffect(() => {
@@ -46,6 +45,12 @@ export function tabs(props) {
         console.log(error);
       });
   }, [props]);
+
+  useEffect(() => {
+    if (auth().currentUser.email != null) {
+      props.fetchSavedAttraction();
+    }
+  }, []);
 
   return (
     <>
@@ -100,7 +105,7 @@ export function tabs(props) {
           }}
         />
         <Tabs.Screen
-          component={emptyScreen}
+          component={profile}
           name="temp3"
           options={{
             tabBarIcon: ({focused}) => (
@@ -119,7 +124,13 @@ export function tabs(props) {
 
 const mapDispatchToProps = (dispatch) =>
   bindActionCreators(
-    {fetchCurrentLocation, fetchDiscovery, fetchPopularAtractions, fetchNews},
+    {
+      fetchCurrentLocation,
+      fetchDiscovery,
+      fetchPopularAtractions,
+      fetchNews,
+      fetchSavedAttraction,
+    },
     dispatch,
   );
 

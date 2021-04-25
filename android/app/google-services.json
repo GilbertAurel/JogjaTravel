@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1066880825211",
+    "project_id": "jogja-306904",
+    "storage_bucket": "jogja-306904.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1066880825211:android:b05ee127c0d25e45342fde",
+        "android_client_info": {
+          "package_name": "com.jogja"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1066880825211-s448vnig8rgjlgdqelvb90uglbfs8mbf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jogja",
+            "certificate_hash": "d3a8237954e2cc97bebeae19f8aa60001c9dee17"
+          }
+        },
+        {
+          "client_id": "1066880825211-i6s045a1eh7eh1kng46rhsoobe77l1r6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXr9roP3z2vNRhiDWpcovSJVF7smOptNo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1066880825211-i6s045a1eh7eh1kng46rhsoobe77l1r6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

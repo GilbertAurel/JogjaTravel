@@ -35,6 +35,11 @@ export function index(props) {
   const [myLocation, setMyLocation] = useState(initialLocation);
   const [attraction, setAttraction] = useState(null);
 
+  const titleOpacity = scrollY.interpolate({
+    inputRange: [0, 50],
+    outputRange: [0, 1],
+  });
+
   useEffect(() => {
     GetLocation.getCurrentPosition({
       enableHighAccuracy: true,
@@ -105,10 +110,6 @@ export function index(props) {
             color={COLORS.black}
           />
         </TouchableOpacity>
-        <TextInput
-          placeholder="search your destination.."
-          style={styles.searchBar}
-        />
         <TouchableOpacity
           style={styles.recenterButton}
           onPress={() => onRecenter()}>
@@ -146,9 +147,13 @@ export function index(props) {
 
           {/* title */}
           {attraction.length >= 1 ? (
-            <Text style={styles.showLabel}>Saved Attractions</Text>
+            <Animated.Text style={{...styles.showLabel, opacity: titleOpacity}}>
+              Saved Attractions
+            </Animated.Text>
           ) : (
-            <Text style={styles.showLabel}>No Saved Attractions</Text>
+            <Animated.Text style={{...styles.showLabel, opacity: titleOpacity}}>
+              No Saved Attractions
+            </Animated.Text>
           )}
 
           {/* item list */}
@@ -382,12 +387,13 @@ const styles = StyleSheet.create({
   },
   searchBarContainer: {
     position: 'absolute',
-    top: SIZES.paddingWide * 2,
+    top: SIZES.paddingWide * 2.5,
     left: 0,
     right: 0,
+    paddingHorizontal: 20,
     elevation: 0,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   searchBar: {

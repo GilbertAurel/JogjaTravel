@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     marginLeft: SIZES.paddingWide,
   },
   quickMenuLabel: {
-    ...FONTS.body1,
+    ...FONTS.body2,
     marginLeft: SIZES.paddingNormal,
   },
   newsCarousel: {

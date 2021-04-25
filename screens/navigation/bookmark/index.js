@@ -14,9 +14,12 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {COLORS, FONTS, SERVER, SIZES} from '../../../constants';
 import {FlatList} from 'react-native-gesture-handler';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import {fetchSavedAttraction, deleteAttraction} from '../../../redux/actions';
 
 export function index(props) {
-  const {savedAttraction} = props;
+  const {savedAttraction, navigation} = props;
   const [attractions, setAttractions] = useState(null);
 
   useEffect(() => {
@@ -63,8 +66,44 @@ export function index(props) {
 
   function renderSavedAttractions() {
     const renderItem = ({item}) => {
+      const deleteAttraction = () => {
+        if (auth().currentUser.email != null) {
+          firestore()
+            .collection('attraction')
+            .doc(auth().currentUser.uid)
+            .collection('saved')
+            .get()
+            .then((snapshot) => {
+              snapshot.docs.map((doc) => {
+                const data = doc.data();
+                const id = doc.id;
+
+                if (data.title == item.title) {
+                  firestore()
+                    .collection('attraction')
+                    .doc(auth().currentUser.uid)
+                    .collection('saved')
+                    .doc(id)
+                    .delete()
+                    .then(() => {
+                      props.deleteAttraction(item);
+                    });
+                }
+              });
+            });
+        } else {
+          props.deleteAttraction(item);
+        }
+      };
+
       return (
-        <View style={styles.itemContainer}>
+        <TouchableOpacity
+          style={styles.itemContainer}
+          onPress={() =>
+            navigation.navigate('attraction', {
+              item: item,
+            })
+          }>
           <Image
             source={{uri: `${SERVER}/${item.imageURL}`}}
             resizeMode="cover"
@@ -82,14 +121,14 @@ export function index(props) {
               <Text style={styles.itemRating}>{item.rating}</Text>
             </View>
           </View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => deleteAttraction()}>
             <MaterialIcons
               name="clear"
               size={SIZES.icon}
               color={COLORS.primary}
             />
           </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       );
     };
 
@@ -127,10 +166,13 @@ export function index(props) {
 }
 
 const mapStateToProps = (store) => ({
-  savedAttraction: store.discoveryState.item,
+  savedAttraction: store.attractionState.savedAttraction,
 });
 
-export default connect(mapStateToProps, null)(index);
+const mapDispatchToProps = (dispatch) =>
+  bindActionCreators({fetchSavedAttraction, deleteAttraction}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(index);
 
 const styles = StyleSheet.create({
   container: {
@@ -138,7 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lightgray,
   },
   searchContainer: {
-    height: SIZES.height * 0.1,
+    height: 100,
     width: SIZES.width,
     paddingTop: 40,
     paddingBottom: 20,
