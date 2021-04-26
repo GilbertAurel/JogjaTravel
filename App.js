@@ -19,6 +19,8 @@ import listingPage from './screens/listing';
 import news from './screens/news';
 import events from './screens/events';
 import help from './screens/help';
+import tourGuide from './screens/tourguide';
+import transport from './screens/transport';
 import {FONTS, IMAGE, SIZES} from './constants';
 
 if (firebase.apps.length === 0) {
@@ -75,6 +77,8 @@ export default function App() {
               <Stack.Screen component={events} name="events" />
               <Stack.Screen component={maps} name="maps" />
               <Stack.Screen component={help} name="help" />
+              <Stack.Screen component={transport} name="transport" />
+              <Stack.Screen component={tourGuide} name="tour" />
             </Stack.Navigator>
           </NavigationContainer>
         </Provider>

@@ -16,18 +16,7 @@ export function detailPage({item, ...props}) {
           height: SIZES.height * 0.25,
           width: SIZES.width,
           backgroundColor: COLORS.primary,
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginTop: SIZES.paddingWide * 2,
-          }}>
-          <TouchableOpacity onPress={() => props.saveAttraction(item)}>
-            <MaterialIcons name="home" size={SIZES.icon} color={COLORS.white} />
-          </TouchableOpacity>
-          <Text>{item.title}</Text>
-        </View>
-      </View>
+        }}></View>
     );
   }
   return <View style={styles.container}>{header()}</View>;

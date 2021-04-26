@@ -9,6 +9,7 @@ import {
   Modal,
   Pressable,
   Linking,
+  ToastAndroid,
 } from 'react-native';
 
 import auth from '@react-native-firebase/auth';
@@ -52,11 +53,11 @@ export function index(props) {
           if (supported) {
             Linking.openURL('https://www.instagram.com/gilbertaurel/');
           } else {
-            alert("Can't access url");
+            ToastAndroid.show('Could not access url!', ToastAndroid.SHORT);
           }
         })
         .catch(() => {
-          alert("Can't access url");
+          ToastAndroid.show('Could not access url!', ToastAndroid.SHORT);
         });
     };
 

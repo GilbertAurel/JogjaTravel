@@ -155,7 +155,13 @@ export function landing({item, scrollRef, loved, navigation, ...props}) {
       <View style={styles.moreButton}>
         <TouchableOpacity
           style={{alignItems: 'center'}}
-          onPress={() => scrollRef.current.scrollToEnd()}>
+          onPress={() =>
+            ToastAndroid.show(
+              'This feature is not available!',
+              ToastAndroid.SHORT,
+            )
+          }>
+          {/* scrollRef.current.scrollToEnd() */}
           <Text style={{...FONTS.body3, color: COLORS.white}}>read more</Text>
           <MaterialIcons
             name="keyboard-arrow-down"

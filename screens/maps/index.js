@@ -81,6 +81,21 @@ export function index(props) {
       );
     };
 
+    const attractionLocationMarker = (item) => {
+      const gps = {
+        latitude: item.coordinate.latitude,
+        longitude: item.coordinate.longitude,
+      };
+
+      return (
+        <Marker coordinate={gps} key={item.id}>
+          <View style={styles.marker}>
+            <View style={styles.markerPin}></View>
+          </View>
+        </Marker>
+      );
+    };
+
     return (
       <View style={styles.mapContainer}>
         <MapView
@@ -89,6 +104,7 @@ export function index(props) {
           ref={mapRef}
           style={{...styles.map}}>
           {currentLocationMarker()}
+          {attraction.map((item) => attractionLocationMarker(item))}
         </MapView>
       </View>
     );
@@ -124,9 +140,18 @@ export function index(props) {
   }
 
   function renderShowAttraction() {
+    const onRecenter = (item) => {
+      console.log(item.coordinate);
+      mapRef.current.animateToRegion({
+        ...item.coordinate,
+        latitudeDelta: 0.00922 * 2,
+        longitudeDelta: 0.00421 * 2,
+      });
+    };
+
     return (
       <ScrollView
-        stickyHeaderIndices={[0]}
+        stickyHeaderIndices={[1]}
         showsVerticalScrollIndicator={false}
         style={styles.showScroll}
         onScroll={Animated.event(
@@ -141,7 +166,6 @@ export function index(props) {
           ],
           {useNativeDriver: false},
         )}>
-        {renderMap()}
         <View style={styles.showContainer}>
           <View style={styles.showScrollIndicator} />
 
@@ -207,7 +231,9 @@ export function index(props) {
 
                 {/* Functions */}
                 <View style={styles.attractionButtonContainer}>
-                  <TouchableOpacity style={styles.attractionButton}>
+                  <TouchableOpacity
+                    style={styles.attractionButton}
+                    onPress={() => onRecenter(item)}>
                     <MaterialIcons
                       name="room"
                       size={SIZES.icon}
@@ -226,6 +252,7 @@ export function index(props) {
             );
           })}
         </View>
+        {renderMap()}
       </ScrollView>
     );
   }
@@ -261,7 +288,7 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     position: 'absolute',
-    elevation: 1,
+    elevation: 0,
     top: 0,
   },
   map: {
