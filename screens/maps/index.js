@@ -97,16 +97,14 @@ export function index(props) {
     };
 
     return (
-      <View style={styles.mapContainer}>
-        <MapView
-          provider={PROVIDER_GOOGLE}
-          initialRegion={myLocation}
-          ref={mapRef}
-          style={{...styles.map}}>
-          {currentLocationMarker()}
-          {attraction.map((item) => attractionLocationMarker(item))}
-        </MapView>
-      </View>
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        initialRegion={myLocation}
+        ref={mapRef}
+        style={{...styles.map}}>
+        {currentLocationMarker()}
+        {attraction.map((item) => attractionLocationMarker(item))}
+      </MapView>
     );
   }
 
@@ -294,6 +292,9 @@ const styles = StyleSheet.create({
   map: {
     width: SIZES.width,
     height: SIZES.height,
+    position: 'absolute',
+    elevation: 0,
+    top: 0,
   },
   marker: {
     height: 20,
@@ -313,7 +314,8 @@ const styles = StyleSheet.create({
   },
   showScroll: {},
   showContainer: {
-    elevation: 2,
+    elevation: 1,
+    zIndex: 1000,
     width: SIZES.width,
     marginTop: SIZES.height - 60,
     paddingBottom: SIZES.paddingWide,
